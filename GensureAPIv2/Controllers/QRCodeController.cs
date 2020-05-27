@@ -296,12 +296,9 @@ namespace GensureAPIv2.Controllers
 
                 if (policyDetetials != null)
                 {
-
-                    var receiptHistory = InsuranceContext.ReceiptHistorys.Single(where: "PolicyNumber='" + policyDetetials.PolicyStatusId + "'");
-
+                    var receiptHistory = InsuranceContext.ReceiptHistorys.Single(where: "PolicyNumber='" + policyDetetials.PolicyNumber + "'");
                     if (receiptHistory != null)
                     {
-
                         QRCodeModel model = new QRCodeModel { CustomerId = 0 };
 
                         details.Policies.Add(model);
@@ -346,18 +343,9 @@ namespace GensureAPIv2.Controllers
                     IsCustomEmail = c.IsCustomEmail
                 }).ToList();
 
-
-
-                // in case of renew
-
-               
+                // in case of renew     
                 //test
-              
-
-
-
-
-
+             
                 var query1 = "SELECT  top 1 [Id] FROM ReceiptModuleHistory order by Id Desc";
                 //var re = InsuranceContext.ReceiptHistorys.All(x => x.Id);
 
@@ -377,16 +365,12 @@ namespace GensureAPIv2.Controllers
                 }
                 else
                     details.Message = "No records found.";
-
-
-
             }
             catch (Exception ex)
             {
                 details.Message = "Exception.";
             }
-
-           
+         
             return details;
         }
 

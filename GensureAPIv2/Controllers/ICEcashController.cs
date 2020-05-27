@@ -33,6 +33,10 @@ namespace GensureAPIv2.Controllers
         string AdminEmail = WebConfigurationManager.AppSettings["AdminEmail"];
         string ZimnatEmail = WebConfigurationManager.AppSettings["ZimnatEmail"];
         smsService objsmsService = new smsService();
+
+        //int _payLater = 7; //test
+
+        //  int _payLater = 1008;
         public ApplicationUserManager UserManager
         {
             get
@@ -332,8 +336,8 @@ namespace GensureAPIv2.Controllers
                             customer.IsCorporate = model.CustomerModel.IsCorporate;
                             customer.BranchId = model.CustomerModel.BranchId;
 
-                            if (customer.ALMId==null)
-                               customer.ALMId = GetALMId();
+                            if (customer.ALMId == null)
+                                customer.ALMId = GetALMId();
 
                             InsuranceContext.Customers.Update(customer);
                         }
@@ -395,7 +399,7 @@ namespace GensureAPIv2.Controllers
                         string brance = string.Empty;
 
                         // var getcustomerdetail = InsuranceContext.Customers.All(where : "Almid is not null order by id desc").FirstOrDefault();
-                        customer.ALMId= GetALMId();
+                        customer.ALMId = GetALMId();
                         InsuranceContext.Customers.Insert(customer);
 
                     }
@@ -498,7 +502,7 @@ namespace GensureAPIv2.Controllers
                             if (vehicelDetails != null)
                             {
                                 item.Id = vehicelDetails.Id;
-                                summaryModel.VehicleId= vehicelDetails.Id;
+                                summaryModel.VehicleId = vehicelDetails.Id;
                             }
 
 
@@ -1316,15 +1320,12 @@ namespace GensureAPIv2.Controllers
         public void SavePartailPayment(VehicleDetails model)
         {
             var vehileDetails = InsuranceContext.VehicleDetails.Single(model.Id);
-            if(vehileDetails!=null)
+            if (vehileDetails != null)
             {
                 vehileDetails.RenewalDate = Convert.ToDateTime(model.LicenseExpiryDate);
             }
-          //  InsuranceContext.VehicleDetails.Update(vehileDetails);
+            //  InsuranceContext.VehicleDetails.Update(vehileDetails);
         }
-
-
-
 
 
         [System.Web.Http.AllowAnonymous]
@@ -1337,7 +1338,7 @@ namespace GensureAPIv2.Controllers
             InsuranceContext.PartialPayments.Insert(payment);
 
 
-            model.CalulatedPremium= GetPartailPayment(model);
+            model.CalulatedPremium = GetPartailPayment(model);
             return model;
 
         }
@@ -1348,8 +1349,8 @@ namespace GensureAPIv2.Controllers
         public decimal GetPartailPayment(PartialPaymentModel model)
         {
             decimal totalPremium = 0;
-          
-            var paymentDetails = InsuranceContext.PartialPayments.All(where: "RegistratonNumber='" + model.RegistratonNumber + "'and CustomerEmail='"+ model.CustomerEmail+"'").ToList();
+
+            var paymentDetails = InsuranceContext.PartialPayments.All(where: "RegistratonNumber='" + model.RegistratonNumber + "'and CustomerEmail='" + model.CustomerEmail + "'").ToList();
             if (paymentDetails != null)
             {
                 totalPremium = paymentDetails.Select(c => c.PartialAmount).Sum();
@@ -1401,18 +1402,17 @@ namespace GensureAPIv2.Controllers
             VehicleDetails vehicel = new VehicleDetails();
             //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
             //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
-          //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 order by id desc "); // to do id will be remove
-
+            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 order by id desc "); // to do id will be remove
 
             var query = " select top 1*  from [dbo].[VehicleDetail] where RegistrationNo='" + vrn + "' order by id desc ";
-            var dbVehicel     = InsuranceContext.Query(query).Select(x => new VehicleDetails()
+            var dbVehicel = InsuranceContext.Query(query).Select(x => new VehicleDetails()
             {
                 Id = x.Id,
                 InsuranceId = x.InsuranceId,
                 LicenseId = x.LicenseId,
-                CombinedID= x.CombinedID,
-              //  CustomerId = x.CustomerId,
-              //  CreatedOn = x.CreatedOn,
+                CombinedID = x.CombinedID,
+                //  CustomerId = x.CustomerId,
+                //  CreatedOn = x.CreatedOn,
                 RegistrationNo = x.RegistrationNo
             }).OrderByDescending(x => x.Id).FirstOrDefault();
 
@@ -1421,13 +1421,51 @@ namespace GensureAPIv2.Controllers
             {
                 vehicel.VehicelId = dbVehicel.Id;
                 vehicel.InsuranceId = dbVehicel.InsuranceId;
-                vehicel.LicenseId =   dbVehicel.LicenseId;
+                vehicel.LicenseId = dbVehicel.LicenseId;
                 vehicel.RegistrationNo = dbVehicel.RegistrationNo;
                 vehicel.CombinedID = dbVehicel.CombinedID;
             }
 
             return vehicel;
         }
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("GetVehicelDetailsByLicPdfCode")]
+        public VehicleDetails GetVehicelDetailsByLicPdfCode(string pdfCode)
+        {
+
+            VehicleDetails vehicel = new VehicleDetails();
+            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
+            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
+            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 order by id desc "); // to do id will be remove
+
+            var query = " select *  from [dbo].[VehicleDetail] where PdfCode='" + pdfCode + "'";
+            var dbVehicel = InsuranceContext.Query(query).Select(x => new VehicleDetails()
+            {
+                Id = x.Id,
+                InsuranceId = x.InsuranceId,
+                LicenseId = x.LicenseId,
+                CombinedID = x.CombinedID,
+
+                //  CustomerId = x.CustomerId,
+                //  CreatedOn = x.CreatedOn,
+                RegistrationNo = x.RegistrationNo
+            }).OrderByDescending(x => x.Id).FirstOrDefault();
+
+
+            if (dbVehicel != null)
+            {
+                vehicel.VehicelId = dbVehicel.Id;
+                vehicel.InsuranceId = dbVehicel.InsuranceId;
+                vehicel.LicenseId = dbVehicel.LicenseId;
+                vehicel.RegistrationNo = dbVehicel.RegistrationNo;
+                vehicel.CombinedID = dbVehicel.CombinedID;
+            }
+
+            return vehicel;
+        }
+
 
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpPost]
@@ -1855,9 +1893,6 @@ namespace GensureAPIv2.Controllers
                         currencyName = "USD";
 
 
-
-
-
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/Reciept.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
                     var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow"))).Replace("#cardnumber#", objPaymentInfo.CardNumber).Replace("#terminalid#", objPaymentInfo.TerminalId).Replace("#transatamout#", objPaymentInfo.TransactionAmount).Replace("#transtdate#", DateTime.Now.ToShortDateString());
@@ -1894,10 +1929,13 @@ namespace GensureAPIv2.Controllers
                         IceCashPolicyNumber += " Policy Num: " + policy.PolicyNumber + " VRN:" + vehicle.RegistrationNo + " Cover Note: " + objPaymentInfo.IceCashPolicyNumber;
                     }
 
-                    string Recieptbody = "Hello " + customer.FirstName + " Welcome to GeneInsure. TransactionId :" + objPaymentInfo.TransactionId + " Payment: " + currencyName + " " + Convert.ToString(summaryDetail.AmountPaid) + IceCashPolicyNumber + " Thanks.";
+                    string Recieptbody = "";
+                    if (vehicle.IceCashRequest=="License")
+                         Recieptbody = "Hello " + customer.FirstName + " Payment: " + summaryDetail.TotalPremium + ". TransactionId: " + objPaymentInfo.TransactionId + " Thanks for using GeneInsure ALM. Switch to Gene for added convenience";
+                    else
+                     Recieptbody = "Hello " + customer.FirstName + " Welcome to GeneInsure. TransactionId :" + objPaymentInfo.TransactionId + " Payment: " + currencyName + " " + Convert.ToString(summaryDetail.AmountPaid) + IceCashPolicyNumber + " Thanks.";
 
-
-
+                    
                     var Recieptresult = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Recieptbody);
 
                     SmsLog objRecieptsmslog = new SmsLog()
@@ -2012,7 +2050,7 @@ namespace GensureAPIv2.Controllers
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("GetLatestToken")]
-        public  RequestToke GetLatestToken()
+        public RequestToke GetLatestToken()
         {
             RequestToke tokenInfo = new RequestToke();
             string token = "";
@@ -2031,7 +2069,7 @@ namespace GensureAPIv2.Controllers
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("UpdateToken")]
-        public  void UpdateToken(ICEcashTokenResponse tokenObject)
+        public void UpdateToken(ICEcashTokenResponse tokenObject)
         {
             string format = "yyyyMMddHHmmss";
             var IceDateNowtime = DateTime.Now;
@@ -2055,7 +2093,100 @@ namespace GensureAPIv2.Controllers
         }
 
 
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("GetPayLaterPolicy")]
+        public PayLaterPolicyInfo GetPayLaterPolicy(string policyNumber)
+        {
+            PayLaterPolicyInfo info = new PayLaterPolicyInfo();
+            try
+            {
+                string query = "select PolicyDetail.PolicyNumber, PolicyDetail.Id as PolicyId, Customer.FirstName + ' ' + Customer.LastName as CustomerName, ";
+                query += " VehicleDetail.RegistrationNo as RegistrationNo, VehicleMake.MakeDescription, ";
+                query += " VehicleModel.ModelDescription, SummaryDetail.TotalPremium, SummaryDetail.Id as SummaryDetailId, PaymentInformation.Id as PaymentInformationId, ";
+                query += " case when PaymentMethod.Name<>'PayLater' then 'Paid' else 'PayLater' end as PaymentStatus ";
+                query += " from PolicyDetail join Customer on PolicyDetail.CustomerId = Customer.Id ";
+                query += " join VehicleDetail on VehicleDetail.PolicyId = PolicyDetail.Id ";
+                query += " left join VehicleMake on VehicleDetail.MakeId = VehicleMake.MakeCode ";
+                query += " left join VehicleModel on VehicleDetail.ModelId = VehicleModel.ModelCode ";
+                query += " join SummaryDetail on Customer.Id = SummaryDetail.CustomerId ";
+                query += " join PaymentInformation on SummaryDetail.Id=PaymentInformation.SummaryDetailId";
+                query += " join PaymentMethod on SummaryDetail.PaymentMethodId=PaymentMethod.Id ";
+                query += " where SummaryDetail.PaymentMethodId = " + (int)paymentMethod.PayLater;
+                var result = InsuranceContext.Query(query).Select(c => new PayLaterPolicyDetail()
+                {
+                    PolicyId = c.PolicyId,
+                    SummaryDetailId = c.SummaryDetailId,
+                    PaymentInformationId = c.PaymentInformationId,
+                    PolicyNumber = c.PolicyNumber,
+                    CustomerName = c.CustomerName,
+                    RegistrationNo = c.RegistrationNo,
+                    MakeDescription = c.MakeDescription,
+                    ModelDescription = c.ModelDescription,
+                    TotalPremium = c.TotalPremium
+                }).ToList();
 
+
+                info.PayLaterPolicyDetails = result;
+
+                if (info.PayLaterPolicyDetails != null && info.PayLaterPolicyDetails.Count() > 0)
+                    info.Message = "Record found";
+                else
+                    info.Message = "No Record found";
+
+            }
+            catch (Exception ex)
+            {
+                info.Message = "Exception.";
+            }
+
+            return info;
+        }
+
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("SavePayLaterStauts")]
+        public string SavePayLaterStauts(PolicyPayLaterDetial model)
+        {
+            string message = "";
+            try
+            {
+                if (model != null)
+                {
+                    var summaryDetial = InsuranceContext.SummaryDetails.Single(model.SummaryDetailId);
+                    if (summaryDetial != null)
+                    {
+                        summaryDetial.PaymentMethodId = model.PaymetMethod;
+                        InsuranceContext.SummaryDetails.Update(summaryDetial);
+
+                        var paymentMethodDetial = InsuranceContext.PaymentMethods.Single(model.PaymetMethod);
+
+                        if (paymentMethodDetial != null)
+                        {
+                            var paymentInformationDetail = InsuranceContext.PaymentInformations.Single(model.PaymentInformationId);
+
+                            if (paymentInformationDetail != null)
+                            {
+                                paymentInformationDetail.PaymentId = paymentMethodDetial.Name;
+
+                                InsuranceContext.PaymentInformations.Update(paymentInformationDetail);
+                                message = "Sucessfully updated.";
+
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                message = "Exception.";
+            }
+
+
+            return message;
+        }
 
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpPost]
@@ -2075,18 +2206,18 @@ namespace GensureAPIv2.Controllers
                         {
                             if (vehicleDetails.IsActive == true)
                             {
-                                if(!string.IsNullOrEmpty(objVehicleUpdate.InsuranceStatus))
+                                if (!string.IsNullOrEmpty(objVehicleUpdate.InsuranceStatus))
                                 {
                                     vehicleDetails.InsuranceStatus = objVehicleUpdate.InsuranceStatus;
                                 }
 
-                                if(!string.IsNullOrEmpty(objVehicleUpdate.CoverNote))
+                                if (!string.IsNullOrEmpty(objVehicleUpdate.CoverNote))
                                 {
                                     vehicleDetails.CoverNote = objVehicleUpdate.CoverNote;
                                 }
-                                
 
-                                if(objVehicleUpdate.LicenseId!=0)
+
+                                if (objVehicleUpdate.LicenseId != 0)
                                 {
                                     vehicleDetails.LicenseId = objVehicleUpdate.LicenseId.ToString();
                                 }
@@ -2104,13 +2235,58 @@ namespace GensureAPIv2.Controllers
             }
         }
 
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("GetEndorsementPolicy")]
+        public PayLaterPolicyInfo GetEndorsementPolicy(string QRCode)
+        {          
+            PayLaterPolicyInfo info = new PayLaterPolicyInfo();
+            try
+            {
+                string query = "select PolicyDetail.PolicyNumber, PolicyDetail.Id as PolicyId, Customer.FirstName + ' ' + Customer.LastName as CustomerName, ";
+                query += " VehicleDetail.RegistrationNo as RegistrationNo, VehicleMake.MakeDescription, ";
+                query += " VehicleModel.ModelDescription, SummaryDetail.TotalPremium, SummaryDetail.Id as SummaryDetailId, PaymentInformation.Id as PaymentInformationId ";
+                query += " from PolicyDetail join Customer on PolicyDetail.CustomerId = Customer.Id ";
+                query += " join VehicleDetail on VehicleDetail.PolicyId = PolicyDetail.Id ";
+                query += " left join VehicleMake on VehicleDetail.MakeId = VehicleMake.MakeCode ";
+                query += " left join VehicleModel on VehicleDetail.ModelId = VehicleModel.ModelCode ";
+                query += " join SummaryDetail on Customer.Id = SummaryDetail.CustomerId ";
+                query += " join PaymentInformation on SummaryDetail.Id=PaymentInformation.SummaryDetailId";
+                query += " where SummaryDetail.PaymentMethodId = " + (int)paymentMethod.PayLater;
+                var result = InsuranceContext.Query(query).Select(c => new PayLaterPolicyDetail()
+                {
+                    PolicyId = c.PolicyId,
+                    SummaryDetailId = c.SummaryDetailId,
+                    PaymentInformationId = c.PaymentInformationId,
+                    PolicyNumber = c.PolicyNumber,
+                    CustomerName = c.CustomerName,
+                    RegistrationNo = c.RegistrationNo,
+                    MakeDescription = c.MakeDescription,
+                    ModelDescription = c.ModelDescription,
+                    TotalPremium = c.TotalPremium
+                }).ToList();
+
+
+                info.PayLaterPolicyDetails = result;
+
+                if (info.PayLaterPolicyDetails != null && info.PayLaterPolicyDetails.Count() > 0)
+                    info.Message = "Record found";
+                else
+                    info.Message = "No Record found";
+
+            }
+            catch (Exception ex)
+            {
+                info.Message = "Exception.";
+            }
+
+            return info;
+        }
 
         public string LoggedUserEmail()
         {
-
             // AlternetEmail
             return System.Configuration.ConfigurationManager.AppSettings["AlternetEmail"];
-
         }
 
         public class checkVRNwithICEcashResponse
