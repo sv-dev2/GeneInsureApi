@@ -36,5 +36,17 @@ namespace GensureAPIv2.Models
             percentage = 1,
             amount = 2
         }
+
+        public enum paymentMethod
+        {
+            ecocash = 2,
+            Zimswitch = 6,
+            Cash = 1,
+            PayLater = 7,
+            PayNow = 3,
+            //PayLater = 1008
+        }
+
+
     }
 }

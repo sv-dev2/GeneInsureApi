@@ -495,8 +495,11 @@ namespace GensureAPIv2.Controllers
                     {
                         foreach (var item in vehicle.ToList())
                         {
-                            var _item = item;
+                            if(item.PaymentTermId==12) // for handling exception
+                                item.PaymentTermId = 1;
 
+
+                            var _item = item;
                             var vehicelDetails = InsuranceContext.VehicleDetails.Single(where: $"policyid= '{policy.Id}' and RegistrationNo= '{_item.RegistrationNo}'");
 
                             if (vehicelDetails != null)
@@ -1317,14 +1320,24 @@ namespace GensureAPIv2.Controllers
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("UpdateLicenseDate")]
-        public void SavePartailPayment(VehicleDetails model)
+        public void UpdateLicenseDate(VehicleDetails model)
         {
             var vehileDetails = InsuranceContext.VehicleDetails.Single(model.Id);
             if (vehileDetails != null)
             {
-                vehileDetails.RenewalDate = Convert.ToDateTime(model.LicenseExpiryDate);
+                try
+                {
+                    string format = "yyyyMMdd";
+                    DateTime LicExpiryDate = DateTime.ParseExact(model.LicenseExpiryDate, format, CultureInfo.InvariantCulture);
+                    vehileDetails.LicExpiryDate = LicExpiryDate.ToShortDateString();
+                    InsuranceContext.VehicleDetails.Update(vehileDetails);
+                }
+                catch(Exception ex)
+                {
+
+                }         
             }
-            //  InsuranceContext.VehicleDetails.Update(vehileDetails);
+             
         }
 
 

@@ -12,7 +12,7 @@ namespace GensureAPIv2.Models
         public int VehicelId { get; set; }
         public string CombinedID { get; set; }
         public string LicenceID { get; set; }
-        public string InsuranceID  { get; set; }
+        public string InsuranceID { get; set; }
         public int LicFrequency { get; set; }
         public int RadioTVUsage { get; set; }
         public int RadioTVFrequency { get; set; }
@@ -40,5 +40,35 @@ namespace GensureAPIv2.Models
     }
 
 
-   
+    public class PayLaterPolicyDetail
+    {
+        public int PolicyId { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int PaymentInformationId { get; set; }
+        public string PolicyNumber { get; set; }
+        public string CustomerName { get; set; }
+        public string RegistrationNo { get; set; }
+        public string MakeDescription { get; set; }
+        public string ModelDescription { get; set; }
+        public decimal TotalPremium { get; set; }
+    }
+
+
+    public class PayLaterPolicyInfo
+    {
+        public List<PayLaterPolicyDetail> PayLaterPolicyDetails { get; set; }
+        public string Message { get; set; }
+
+    }
+
+    public class PolicyPayLaterDetial
+    {
+        public int PaymetMethod { get; set; }
+        public int SummaryDetailId { get; set; }
+        public int PaymentInformationId { get; set; }
+        public string PolicyNumber { get; set; }
+    }
+
+
+
 }

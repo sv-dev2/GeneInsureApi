@@ -125,6 +125,16 @@ namespace GensureAPIv2.Models
 
         public string CombinedID { get; set; }
 
+        public decimal? TotalLicAmount { get; set; }
+        public decimal? PenaltiesAmt { get; set; }
+
+        public decimal? ArrearsAmt { get; set; }
+
+        public decimal? LicTransactionAmt { get; set; }
+
+        public decimal? AdministrationAmt { get; set; }
+
+
     }
 
 

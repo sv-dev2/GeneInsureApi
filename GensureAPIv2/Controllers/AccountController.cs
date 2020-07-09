@@ -39,15 +39,7 @@ namespace GensureAPIv2.Controllers
         public AccountController()
         {
 
-
-
-
-
             //test
-
-
-
-
 
         }
 

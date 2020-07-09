@@ -9,5 +9,6 @@ namespace GensureAPIv2.Controllers
 {
     public class LicenceController : ApiController
     {
+
     }
 }
