@@ -270,6 +270,11 @@ namespace GensureAPIv2.Controllers
 
             SummaryDetailModel summaryModel = new SummaryDetailModel();
 
+            EmailService logService = new EmailService();
+
+            logService.WriteLog("SubmitPlan start: " + model.RiskDetailModel[0].RegistrationNo + " email:" + model.CustomerModel.EmailAddress);
+
+
             string btnSendQuatation = "";
 
             try
@@ -497,6 +502,19 @@ namespace GensureAPIv2.Controllers
                         {
                             if(item.PaymentTermId==12) // for handling exception
                                 item.PaymentTermId = 1;
+
+                            item.IsMobile = true;
+
+                            // to handle the exception if make and model is not comming correct
+                            
+                            var vehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription= '{item.MakeId}'");
+                            if(vehicleMake!=null)
+                            {
+                                item.MakeId = vehicleMake.MakeCode;
+                                var vehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription= '{item.ModelId}' and MakeCode ='{item.MakeId}' ");
+                                if(vehicleModel!=null)
+                                    item.ModelId = vehicleModel.ModelCode;
+                            }
 
 
                             var _item = item;
@@ -1295,6 +1313,9 @@ namespace GensureAPIv2.Controllers
             }
             catch (Exception ex)
             {
+
+                logService.WriteLog(ex.Message);
+
                 // return RedirectToAction("SummaryDetail");
             }
             // return result1;
@@ -2249,6 +2270,34 @@ namespace GensureAPIv2.Controllers
         }
 
         [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("SaveCertSerialNum")]
+        public void SaveCertSerialNum([FromBody] CertSerialNoDetailModel certSerialNoDetail)
+        {
+            try
+            {
+
+                var vehicleDetails = InsuranceContext.VehicleDetails.Single(certSerialNoDetail.VehicleId);
+                if (vehicleDetails != null)
+                {
+                    CertSerialNoDetail details = new CertSerialNoDetail();
+                    details.VehicleId = certSerialNoDetail.VehicleId;
+                    details.CertSerialNo = certSerialNoDetail.CertSerialNo;
+                    details.CreatedOn = DateTime.Now;
+                    details.PolicyId = vehicleDetails.PolicyId;
+                    details.VRN = vehicleDetails.RegistrationNo;
+                    details.CreatedBy =  Convert.ToInt32(vehicleDetails.CustomerId);
+                    InsuranceContext.CertSerialNoDetails.Insert(details);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("GetEndorsementPolicy")]
         public PayLaterPolicyInfo GetEndorsementPolicy(string QRCode)
@@ -2344,7 +2393,12 @@ namespace GensureAPIv2.Controllers
             public string LicenseExpiryDate { get; set; }
 
         }
-
+        public class CertSerialNoDetailModel
+        {
+            public int VehicleId { get; set; }
+            public string CertSerialNo { get; set; }
+            public string VRN { get; set; }
+        }
         public class VehicalMakeModel
         {
             public string make { get; set; }

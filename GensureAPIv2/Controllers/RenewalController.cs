@@ -207,8 +207,6 @@ namespace GensureAPIv2.Controllers
 
                         }
 
-
-
                         customerDetials.AddressLine1 = model.CustomerModel.AddressLine1;
                         customerDetials.AddressLine2 = model.CustomerModel.AddressLine2;
                         customerDetials.City = model.CustomerModel.City;
@@ -338,6 +336,8 @@ namespace GensureAPIv2.Controllers
                         if (vehicelDetails != null)
                         {
                             vehicle.Id = vehicelDetails.Id;
+
+                            vehicle.IsMobile = true;
 
                             //if (vehicle.Id == null || vehicle.Id == 0)
                             //{

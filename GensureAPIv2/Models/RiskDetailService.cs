@@ -40,7 +40,8 @@ namespace GensureAPIv2.Models
             catch (Exception ex)
             {
                 LogDetailTbl log = new LogDetailTbl();
-                log.Request = ex.Message;
+                log.VRN = model.RegistrationNo;
+                log.Request = "ALM " +ex.Message;
                 string vehicleInfo = model.RegistrationNo + "," + model.PaymentTermId + "," + model.CoverTypeId + "," + model.CoverStartDate + "," + model.CoverEndDate + "," + model.VehicleYear + "," + model.Premium + ",";
                 vehicleInfo += model.StampDuty + "," + model.ZTSCLevy + "," + model.Discount + "," + model.IncludeRadioLicenseCost + "," + model.RadioLicenseCost + "," + model.VehicleLicenceFee + "," + model.PolicyId;
                 log.Response = vehicleInfo;

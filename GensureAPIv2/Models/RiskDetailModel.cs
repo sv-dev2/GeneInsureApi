@@ -134,7 +134,7 @@ namespace GensureAPIv2.Models
 
         public decimal? AdministrationAmt { get; set; }
 
-
+        public bool IsMobile { get; set; }
     }
 
 

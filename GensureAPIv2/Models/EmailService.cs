@@ -77,20 +77,25 @@ namespace GensureAPIv2.Models
 
         public void WriteLog(string error)
         {
-            string message = string.Format("Error Time: {0}", DateTime.Now);
-            message += error;
-            message += "-----------------------------------------------------------";
-
-            message += Environment.NewLine;
-
-
-
-
-            string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
-            using (StreamWriter writer = new StreamWriter(path, true))
+            try
             {
-                writer.WriteLine(message);
-                writer.Close();
+                string message = string.Format("Error Time: {0}", DateTime.Now);
+                message += error;
+                message += "-----------------------------------------------------------";
+
+                message += Environment.NewLine;
+
+                string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    writer.WriteLine(message);
+                    writer.Close();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 

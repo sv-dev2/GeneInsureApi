@@ -23,6 +23,8 @@ namespace GensureAPIv2.Models
     public class PdfModel
     {
         public string Base64String { get; set; }
+
+        public int VehicleId { get; set; }
     }
     public class QRCodeModel
     {
@@ -46,8 +48,11 @@ namespace GensureAPIv2.Models
         public bool IncludeRadioLicenseCost { get; set; }
 
         public int SummaryId { get; set; }
+        public int  PolicyId { get; set; }
         public string Email { get; set; }
         public bool IsCustomEmail { get; set; }
+
+        public string PaymentStatus { get; set; }
     }
 
     public class QRCodePolicyDetails
@@ -58,6 +63,8 @@ namespace GensureAPIv2.Models
         public int RecieptNumber { get; set; }
 
         public decimal AmountDue { get; set; }
+
+        public decimal Balance { get; set; }
       //  public string PaymentMethod { get; set; }
 
       //  public string ReceiptAmount { get; set; }
@@ -120,6 +127,7 @@ namespace GensureAPIv2.Models
         public string Message { get; set; }
 
         public string PolicyNumber { get; set; }
+        public int CreatedBy { get; set; }
     }
 
 

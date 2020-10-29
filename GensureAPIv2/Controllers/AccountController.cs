@@ -38,9 +38,7 @@ namespace GensureAPIv2.Controllers
 
         public AccountController()
         {
-
             //test
-
         }
 
         public AccountController(ApplicationUserManager userManager,
@@ -434,6 +432,8 @@ namespace GensureAPIv2.Controllers
             {
                 branchList.Add(new BranchModel { Id = item.Id, BranchName = item.BranchName });
             }
+
+            EmailService logService = new EmailService();
 
 
             return branchList;
@@ -976,7 +976,6 @@ namespace GensureAPIv2.Controllers
         {
             DataSet ds = new DataSet();
 
-
             var connection =
     System.Configuration.ConfigurationManager.
     ConnectionStrings["Insurance"].ConnectionString;
@@ -1004,6 +1003,32 @@ namespace GensureAPIv2.Controllers
             string certificatePath = HttpContext.Current.Server.MapPath("~/CertificatePDF");
             string fileFullPath = certificatePath + "\\Certificate" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
             string FinalCertificatePath = ConfigurationManager.AppSettings["CerificatePathBase"] + "/CertificatePDF/Certificate" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf"; ;
+            try
+            {
+                if (!Directory.Exists(certificatePath))
+                {
+                    Directory.CreateDirectory(certificatePath);
+                }
+
+                if (!string.IsNullOrEmpty(model.Base64String))
+                {
+                    byte[] pdfbytes = Convert.FromBase64String(model.Base64String);
+                    File.WriteAllBytes(fileFullPath, pdfbytes);
+                }
+                return FinalCertificatePath;
+            }
+            catch (Exception ex) { return string.Empty; }
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("NewSaveCertificate")]
+        public string NewSaveCertificatePdf([FromBody]PdfModel model)
+        {
+            string certificatePath = HttpContext.Current.Server.MapPath("~/CertificatePDF");
+            string fileFullPath = certificatePath + "\\Certificate" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
+            string FinalCertificatePath = ConfigurationManager.AppSettings["CerificatePathBase"] + "/CertificatePDF/Certificate/" + model.VehicleId + ".pdf"; ;
             try
             {
                 if (!Directory.Exists(certificatePath))

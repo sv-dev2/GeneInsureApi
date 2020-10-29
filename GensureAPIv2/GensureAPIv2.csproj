@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Insurance.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\InsuranceClaim_31_jan\InsuranceClaim\bin\Insurance.Domain.dll</HintPath>
+      <HintPath>..\..\GeneInsure\InsuranceClaim\bin\Insurance.Domain.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
@@ -391,10 +391,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Thumbs.db" />
     <Content Include="Pdf\14809 Gene Insure Motor Policy Book.pdf" />
     <Content Include="CertificatePDF\Certificate20190715135650.pdf" />
     <Content Include="CertificatePDF\Certificate20190715164322.pdf" />
+    <None Include="Properties\PublishProfiles\Api.pubxml" />
     <None Include="Properties\PublishProfiles\GenInsurance.pubxml" />
     <None Include="Properties\PublishProfiles\TestServer.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

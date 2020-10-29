@@ -60,11 +60,11 @@ namespace GensureAPIv2.Controllers
         {
             LoginModel login = new LoginModel();
             var user = UserManager.Find(UserName, Password);
-            var Customer = InsuranceContext.Customers.Single(where: $"UserID='{user.Id}'");
             if (user != null)
             {
+                var Customer = InsuranceContext.Customers.Single(where: $"UserID='{user.Id}'");
                 var role = UserManager.GetRoles(user.Id.ToString()).FirstOrDefault();
-                if (role == "Staff" || role == "Licence Disk Delivery Manager")
+                if (role == "Finance" || role == "Licence Disk Delivery Manager" || role == "Administrator")
                 {
                     login.Message = "Sucessfully";
                     login.FirstName = Customer.FirstName;
@@ -81,6 +81,7 @@ namespace GensureAPIv2.Controllers
             {
                 login.Message = "Invalid username or password.";
             }
+
             // If we got this far, something failed, redisplay form
             return login;
         }
@@ -284,12 +285,12 @@ namespace GensureAPIv2.Controllers
                 details.Policies = new List<QRCodeModel>();
 
 
-               // InsuranceContext.CertSerialNoDetails
+                // InsuranceContext.CertSerialNoDetails
                 var CertSerialNoDetails = InsuranceContext.CertSerialNoDetails.Single(where: $"CertSerialNo='" + QRCode + "'");
 
                 PolicyDetail policyDetetials = null;
 
-                if(CertSerialNoDetails!=null)
+                if (CertSerialNoDetails != null)
                 {
                     policyDetetials = InsuranceContext.PolicyDetails.Single(CertSerialNoDetails.PolicyId);
                 }
@@ -313,7 +314,8 @@ namespace GensureAPIv2.Controllers
                 }
 
 
-                var query = "Select VehicleLicenceFee,Email,IsCustomEmail,StampDuty,ZTSCLevy,Premium,Customer.Id as CustomerId,ModelDescription,VehicleDetail.RenewalDate, RadioLicenseCost, IncludeRadioLicenseCost, CoverType.Name as CoverTypeName,PaymentTerm.Name as PaymentTermName,Covertype.Name, FirstName,LastName,PolicyNumber,RegistrationNo,SummaryDetail.Id as SummaryId from VehicleDetail";
+                var query = "Select VehicleLicenceFee,Email,IsCustomEmail,StampDuty,ZTSCLevy,Premium,Customer.Id as CustomerId,ModelDescription,VehicleDetail.RenewalDate, RadioLicenseCost, IncludeRadioLicenseCost, CoverType.Name as CoverTypeName,";
+                query += "  PaymentTerm.Name as PaymentTermName,Covertype.Name, FirstName,LastName,PolicyNumber,RegistrationNo,SummaryDetail.Id as SummaryId, case when PaymentMethod.Name<>'PayLater' then 'Paid' else 'PayLater' end as PaymentStatus from VehicleDetail";
                 query += " join PolicyDetail on VehicleDetail.PolicyId=PolicyDetail.Id";
                 query += " Left join Customer on PolicyDetail.CustomerId=Customer.Id";
                 query += " Left Join CoverType on VehicleDetail.CoverTypeId=CoverType.Id";
@@ -322,7 +324,8 @@ namespace GensureAPIv2.Controllers
                 query += " Left Join SummaryVehicleDetail On VehicleDetail.Id=SummaryVehicleDetail.VehicleDetailsId";
                 query += " Left Join SummaryDetail On SummaryVehicleDetail.SummaryDetailId=SummaryDetail.Id";
                 query += " left join AspNetUsers on Customer.UserID=AspNetUsers.Id";
-                query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId where CertSerialNo= '" + QRCode + "'";
+                query += " left join PaymentMethod on SummaryDetail.PaymentMethodId= PaymentMethod.Id ";
+                query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId where  VehicleDetail.IsActive=1 and CertSerialNo= '" + QRCode + "'";
                 //var query = "select policyDetail.Number as PolicyNumber";
                 List<QRCodeModel> list = InsuranceContext.Query(query).Select(c => new QRCodeModel
                 {
@@ -340,12 +343,13 @@ namespace GensureAPIv2.Controllers
                     TotalPremium = c.VehicleLicenceFee + c.StampDuty + c.ZTSCLevy + c.Premium + c.RadioLicenseCost,
                     SummaryId = c.SummaryId,
                     Email = c.Email,
-                    IsCustomEmail = c.IsCustomEmail
+                    IsCustomEmail = c.IsCustomEmail,
+                    PaymentStatus = c.PaymentStatus
                 }).ToList();
 
                 // in case of renew     
                 //test
-             
+
                 var query1 = "SELECT  top 1 [Id] FROM ReceiptModuleHistory order by Id Desc";
                 //var re = InsuranceContext.ReceiptHistorys.All(x => x.Id);
 
@@ -370,9 +374,135 @@ namespace GensureAPIv2.Controllers
             {
                 details.Message = "Exception.";
             }
-         
+
             return details;
         }
+
+
+        [AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("GetVehicleDetails")]
+        public QRCodePolicyDetails GetVehicleDetails(string vrn="", string policyNumber="")
+        {
+
+            QRCodePolicyDetails details = new QRCodePolicyDetails();
+            try
+            {
+                details.Policies = new List<QRCodeModel>();
+
+
+                // InsuranceContext.CertSerialNoDetails
+
+                var query = "Select VehicleLicenceFee,Email,IsCustomEmail,StampDuty,ZTSCLevy,Premium,Customer.Id as CustomerId,ModelDescription,VehicleDetail.RenewalDate, RadioLicenseCost, IncludeRadioLicenseCost, CoverType.Name as CoverTypeName,";
+                query += "  PaymentTerm.Name as PaymentTermName,Covertype.Name, FirstName,LastName,PolicyNumber,RegistrationNo,SummaryDetail.Id as SummaryId, case when PaymentMethod.Name<>'PayLater' then 'Paid' else 'PayLater' end as PaymentStatus, PolicyDetail.Id as PolicyId from VehicleDetail";
+                query += " join PolicyDetail on VehicleDetail.PolicyId=PolicyDetail.Id";
+                query += " Left join Customer on PolicyDetail.CustomerId=Customer.Id";
+                query += " Left Join CoverType on VehicleDetail.CoverTypeId=CoverType.Id";
+                query += " Left Join PaymentTerm on VehicleDetail.PaymentTermId=PaymentTerm.Id";
+                query += " Left Join VehicleModel On VehicleDetail.ModelId=VehicleModel.ModelCode";
+                query += " Left Join SummaryVehicleDetail On VehicleDetail.Id=SummaryVehicleDetail.VehicleDetailsId";
+                query += " Left Join SummaryDetail On SummaryVehicleDetail.SummaryDetailId=SummaryDetail.Id";
+                query += " left join AspNetUsers on Customer.UserID=AspNetUsers.Id";
+                query += " left join PaymentMethod on SummaryDetail.PaymentMethodId= PaymentMethod.Id ";
+                query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId ";
+                query += " where  SummaryDetail.isQuotation=0 and VehicleDetail.isactive=1";
+
+                if(!string.IsNullOrEmpty(vrn))
+                    query += " and VehicleDetail.RegistrationNo='" + vrn + "'";
+
+                if (!string.IsNullOrEmpty(policyNumber))
+                    query += " and PolicyDetail.PolicyNumber='" + policyNumber + "'";
+
+
+
+                query += " order by VehicleDetail.Id desc";
+                //var query = "select policyDetail.Number as PolicyNumber";
+                List<QRCodeModel> list = InsuranceContext.Query(query).Select(c => new QRCodeModel
+                {
+                    Message = "Successfully.",
+                    PolicyId = c.PolicyId,
+                    CustomerId = c.CustomerId,
+                    CustomerName = c.FirstName + " " + c.LastName,
+                    PolicyNumber = c.PolicyNumber,
+                    Registrationno = c.RegistrationNo,
+                    ModelDescription = c.ModelDescription,
+                    Covertype = c.CoverTypeName,
+                    PaymentTerm = c.PaymentTermName,
+                    ExpireDate = c.RenewalDate,
+                    IncludeRadioLicenseCost = Convert.ToBoolean(c.IncludeRadioLicenseCost),
+                    RadioLicenseCost = c.IncludeRadioLicenseCost == null ? 0 : Convert.ToDecimal(c.IncludeRadioLicenseCost),
+                    TotalPremium = c.VehicleLicenceFee + c.StampDuty + c.ZTSCLevy + c.Premium + (c.RadioLicenseCost == null ? 0 : Convert.ToDecimal(c.RadioLicenseCost)),
+                    SummaryId = c.SummaryId,
+                    Email = c.Email,
+                    IsCustomEmail = c.IsCustomEmail,
+                    PaymentStatus = c.PaymentStatus
+                }).ToList();
+
+
+                
+               
+
+
+                foreach (var item in list)
+                {
+                    var recQuery = "SELECT  top 1 * FROM ReceiptModuleHistory where policyid= "+item.PolicyId + " order by Id Desc";
+                    var receipt = InsuranceContext.Query(recQuery).Select(x => new ReceiptModuleHistory()
+                    {
+                        Id = x.Id,
+                        AmountDue = x.AmountDue,
+                        Balance= x.Balance
+                    }).FirstOrDefault();
+
+                    if(receipt!=null)
+                    {
+                        details.AmountDue += Convert.ToDecimal(receipt.AmountDue);
+                        details.Balance += Convert.ToDecimal(receipt.Balance);
+                    }
+                    else
+                    {
+                            details.Balance = list.Sum(c => c.TotalPremium); // default balane
+                    }
+                }
+
+                details.Policies = list;
+                details.Message = "Records found.";
+
+               
+
+
+                var query1 = "SELECT  top 1 [Id] FROM ReceiptModuleHistory order by Id Desc";
+                var receipt1 = InsuranceContext.Query(query1).Select(x => new ReceiptModuleHistory()
+                {
+                    Id = x.Id,
+                }).FirstOrDefault();
+
+
+                if(receipt1!=null)
+                {
+                    details.RecieptNumber = receipt1 == null ? 100000 : receipt1.Id + 1;
+                    if (list.Count()>0)
+                    {
+                        details.AmountDue = list.Sum(c => c.TotalPremium);
+                        details.Message = "Records found.";
+                    }
+                    else
+                    {
+                        details.Message = "Records not found.";
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                details.Message = "Exception.";
+            }
+
+            return details;
+        }
+
+
 
 
         [System.Web.Http.AllowAnonymous]
@@ -552,7 +682,7 @@ namespace GensureAPIv2.Controllers
         [System.Web.Http.Route("Savereceiptmodule")]
         public ReceiptModuleMessage Savereceiptmodule(ReceiptModule model)
         {
-       //   ReceiptModule   model = new ReceiptModule { Amountdue= 32, Balance= "2.6000000000000014",	CreatedBy= 24633,	CustomerName= "dsdfsdf gdfgdfg", DatePosted= DateTime.Now,	Paymentmethod= "Cash",Receiptamount= 30, Policyno= "GMCC190002278-4", transactionreference= "testing"};
+            //   ReceiptModule   model = new ReceiptModule { Amountdue= 32, Balance= "2.6000000000000014",	CreatedBy= 24633,	CustomerName= "dsdfsdf gdfgdfg", DatePosted= DateTime.Now,	Paymentmethod= "Cash",Receiptamount= 30, Policyno= "GMCC190002278-4", transactionreference= "testing"};
 
 
 
@@ -566,7 +696,7 @@ namespace GensureAPIv2.Controllers
 
             string savedsignaturepath = "";
 
-            int customerId =0;
+            int customerId = 0;
 
 
 
@@ -593,7 +723,7 @@ namespace GensureAPIv2.Controllers
                             if (vehicleDetails != null)
                             {
 
-                                customerId =  vehicleDetails.CustomerId.Value;
+                                customerId = vehicleDetails.CustomerId.Value;
 
                                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{vehicleDetails.Id}'");
 
@@ -625,7 +755,7 @@ namespace GensureAPIv2.Controllers
                             }
                         }
 
-                       // end renew
+                        // end renew
 
 
                         //Save Signature Changes
@@ -676,6 +806,8 @@ namespace GensureAPIv2.Controllers
                         data.IsMobile = true;
                         data.CreatedBy = model.CreatedBy;
 
+                        reciept.CreatedBy = model.CreatedBy;
+
                         data.SignaturePath = savedsignaturepath;
                         data.CreatedOn = DateTime.Now;
 
@@ -683,42 +815,42 @@ namespace GensureAPIv2.Controllers
 
 
                         InsuranceContext.ReceiptHistorys.Insert(data);
-                     
+
                         var customer = InsuranceContext.Customers.Single(where: $"Id={customerId}");
 
-                            if (customer != null)
+                        if (customer != null)
+                        {
+
+                            var GETdata = data;
+
+                            var ReceiptHistory = InsuranceContext.ReceiptHistorys.Single(where: $"Id='{GETdata.Id}'");
+                            //  var _customer = InsuranceContext.Customers.Single(where: $"Id='{policyDetails.CustomerId}'");
+                            var _user = UserManager.FindById(customer.UserID);
+                            string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentReceipt.cshtml";
+                            string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
+                            string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
+                            var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString())
+                            .Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName)
+                            .Replace("#LastName#", customer.LastName)
+                            .Replace("#AccountName#", ReceiptHistory.CustomerName)
+                            .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
+                            .Replace("#Amount#", Convert.ToString(ReceiptHistory.AmountPaid))
+                            .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.Id.ToString())
+                            .Replace("#TransactionReference#", ReceiptHistory.TransactionReference).Replace("#TransactionReference#", ReceiptHistory.TransactionReference)
+                            .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
+
+
+                            var user = UserManager.FindById(customer.UserID);
+                            if (customer.IsCustomEmail == false)
                             {
-
-                                var GETdata = data;
-
-                                var ReceiptHistory = InsuranceContext.ReceiptHistorys.Single(where: $"Id='{GETdata.Id}'");
-                                //  var _customer = InsuranceContext.Customers.Single(where: $"Id='{policyDetails.CustomerId}'");
-                                var _user = UserManager.FindById(customer.UserID);
-                                string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/UserPaymentReceipt.cshtml";
-                                string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                                string filepath = System.Configuration.ConfigurationManager.AppSettings["urlPath"];
-                                var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString())
-                                .Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName)
-                                .Replace("#LastName#", customer.LastName)
-                                .Replace("#AccountName#", ReceiptHistory.CustomerName)
-                                .Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2)
-                                .Replace("#Amount#", Convert.ToString(ReceiptHistory.AmountPaid))
-                                .Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", ReceiptHistory.Id.ToString())
-                                .Replace("#TransactionReference#", ReceiptHistory.TransactionReference).Replace("#TransactionReference#", ReceiptHistory.TransactionReference)
-                                .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
-
-
-                                var user = UserManager.FindById(customer.UserID);
-                                if (customer.IsCustomEmail == false)
-                                {
-                                    EmailService.SendEmail(user.Email, "", "", "Receipt", Body2, attachements);
-                                }
-                                else
-                                {
-                                    EmailService.SendEmail("service@gene.co.zw", "", "", "Receipt", Body2, attachements);
-                                }
+                                EmailService.SendEmail(user.Email, "", "", "Receipt", Body2, attachements);
                             }
-              
+                            else
+                            {
+                                EmailService.SendEmail("service@gene.co.zw", "", "", "Receipt", Body2, attachements);
+                            }
+                        }
+
 
 
                         reciept.Message = "Success.";
