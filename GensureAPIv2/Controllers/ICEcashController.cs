@@ -2011,7 +2011,16 @@ namespace GensureAPIv2.Controllers
                         VehicleModel model = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                         VehicleMake make = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
 
-                        string vehicledescription = model.ModelDescription + " / " + make.MakeDescription;
+                        string vehicledescription = "";
+                        string modelName = "";
+                        string makeName = "";
+
+                        if (model != null)
+                            modelName = model.ModelDescription;
+                        if (make != null)
+                            makeName = make.MakeDescription;
+
+                        vehicledescription = modelName + " / " + makeName;
 
                         RoadsideAssistanceAmount = RoadsideAssistanceAmount + Convert.ToDecimal(item.RoadsideAssistanceAmount);
                         MedicalExpensesAmount = MedicalExpensesAmount + Convert.ToDecimal(item.MedicalExpensesAmount);

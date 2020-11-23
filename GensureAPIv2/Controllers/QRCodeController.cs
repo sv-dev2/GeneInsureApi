@@ -404,7 +404,7 @@ namespace GensureAPIv2.Controllers
                 query += " Left Join SummaryDetail On SummaryVehicleDetail.SummaryDetailId=SummaryDetail.Id";
                 query += " left join AspNetUsers on Customer.UserID=AspNetUsers.Id";
                 query += " left join PaymentMethod on SummaryDetail.PaymentMethodId= PaymentMethod.Id ";
-                query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId ";
+               // query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId ";
                 query += " where  SummaryDetail.isQuotation=0 and VehicleDetail.isactive=1";
 
                 if(!string.IsNullOrEmpty(vrn))
@@ -439,13 +439,31 @@ namespace GensureAPIv2.Controllers
                 }).ToList();
 
 
-                
-               
+                var detail = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber='{policyNumber}'");
+                var renewPolicyNumber = "";
+
+                if (detail == null)
+                {
+                    var vehicleDetail = InsuranceContext.VehicleDetails.Single(where: $"RenewPolicyNumber = '{policyNumber}'");
+
+                    if (vehicleDetail != null)
+                    {
+                        renewPolicyNumber = policyNumber;
+                    
+                    }
+                }
 
 
                 foreach (var item in list)
                 {
                     var recQuery = "SELECT  top 1 * FROM ReceiptModuleHistory where policyid= "+item.PolicyId + " order by Id Desc";
+
+                    if (!string.IsNullOrEmpty(renewPolicyNumber))
+                    {
+                        recQuery = "select top 1 * from ReceiptModuleHistory where RenewPolicyNumber='" + renewPolicyNumber + "' order by id desc";
+                    }
+
+
                     var receipt = InsuranceContext.Query(recQuery).Select(x => new ReceiptModuleHistory()
                     {
                         Id = x.Id,
@@ -698,6 +716,11 @@ namespace GensureAPIv2.Controllers
 
             int customerId = 0;
 
+            if(model.CreatedBy==0)
+            {
+                reciept.Message = "Created by is not passed, please contact to administrator.";
+                return reciept;
+            }
 
 
             try
@@ -705,7 +728,11 @@ namespace GensureAPIv2.Controllers
                 var paymentmethod = model.Paymentmethod;
                 if (paymentmethod != null)
                 {
-                    var payment = InsuranceContext.PaymentMethods.Single(where: $"Name='{paymentmethod}'");
+                    // var payment = InsuranceContext.PaymentMethods.Single(where: $"Name='{paymentmethod}'");
+                    var reciepPaymentList = RecieptPaymentList();
+
+                    var payment = reciepPaymentList.FirstOrDefault(c => c.PaymentName == model.Paymentmethod);
+
                     var Policyno = model.Policyno;
 
                     ReceiptModuleHistory data = new ReceiptModuleHistory();
@@ -722,7 +749,6 @@ namespace GensureAPIv2.Controllers
 
                             if (vehicleDetails != null)
                             {
-
                                 customerId = vehicleDetails.CustomerId.Value;
 
                                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{vehicleDetails.Id}'");
@@ -744,10 +770,10 @@ namespace GensureAPIv2.Controllers
 
                             if (vehicleDetails != null)
                             {
+                                data.RenewPolicyNumber = model.Policyno;
                                 customerId = vehicleDetails.CustomerId.Value;
 
                                 var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{vehicleDetails.Id}'");
-
                                 if (SummaryVehicleDetails != null)
                                 {
                                     model.SummaryId = SummaryVehicleDetails.SummaryDetailId;
@@ -799,7 +825,7 @@ namespace GensureAPIv2.Controllers
                         data.Balance = model.Balance;
                         data.TransactionReference = model.transactionreference;
                         data.DatePosted = Convert.ToDateTime(model.DatePosted);
-                        data.PaymentMethodId = payment.Id;
+                        data.PaymentMethodId = payment.PaymentId;
                         data.CustomerName = model.CustomerName;
 
                         data.SummaryDetailId = model.SummaryId;
@@ -861,10 +887,27 @@ namespace GensureAPIv2.Controllers
             }
             catch (Exception ex)
             {
-                reciept.Message = "Excepton occured.";
+                reciept.Message = "Excepton occured." + ex.Message;
             }
             return reciept;
         }
 
+
+        public List<RecieptPaymentMethod> RecieptPaymentList()
+        {
+            List<RecieptPaymentMethod> list = new List<RecieptPaymentMethod>();
+
+            list.Add( new RecieptPaymentMethod {PaymentId=1, PaymentName= "Cash" });
+
+            list.Add(new RecieptPaymentMethod { PaymentId = 2, PaymentName = "Ecocash" });
+
+            list.Add(new RecieptPaymentMethod { PaymentId = 3, PaymentName = "Swipe" });
+
+            list.Add(new RecieptPaymentMethod { PaymentId = 4, PaymentName = "MasterVisa Card" });
+
+            return list;
+
+
+        }
     }
 }
