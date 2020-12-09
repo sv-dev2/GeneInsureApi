@@ -11,4 +11,11 @@ namespace GensureAPIv2.Models
 
         public int PaymentTermId { get; set; }
     }
+
+    public class RecieptPaymentMethod
+    {
+        public int PaymentId { get; set; }
+
+        public string PaymentName { get; set; }
+    }
 }

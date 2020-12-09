@@ -24,8 +24,6 @@ namespace GensureAPIv2.Controllers
             ClaimNotificationModel Claimmodel = new ClaimNotificationModel();
             if (SearchText != null && SearchText != "")
             {
-
-
                 //var  customers = InsuranceContext.Customers.All(where: $"FirstName like '%{searchtext1}%' and LastName like '%{searchtext2}%' ").ToList();
                 var policye = InsuranceContext.PolicyDetails.Single(where: $"PolicyNumber = '{SearchText}'");
                 if (policye != null && policye.Count() > 0)

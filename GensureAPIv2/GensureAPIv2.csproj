@@ -51,7 +51,7 @@
     </Reference>
     <Reference Include="Insurance.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GeneInsure\InsuranceClaim\bin\Insurance.Domain.dll</HintPath>
+      <HintPath>F:\GeneInsureWork\GeneInsure\InsuranceClaim\bin\Insurance.Domain.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
