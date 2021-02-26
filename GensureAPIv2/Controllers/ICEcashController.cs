@@ -405,7 +405,16 @@ namespace GensureAPIv2.Controllers
 
                         // var getcustomerdetail = InsuranceContext.Customers.All(where : "Almid is not null order by id desc").FirstOrDefault();
                         customer.ALMId = GetALMId();
-                        InsuranceContext.Customers.Insert(customer);
+
+                        try
+                        {
+                            InsuranceContext.Customers.Insert(customer);
+                        }
+                        catch(Exception ex)
+                        {
+                            logService.WriteLog("Save customer: " + model.RiskDetailModel[0].RegistrationNo + " ex:" + ex.Message);
+                        }
+
 
                     }
 
@@ -558,6 +567,7 @@ namespace GensureAPIv2.Controllers
                                 LicenseAddress.CreatedOn = DateTime.Now;
                                 LicenseAddress.ModifiedBy = customer.Id;
                                 LicenseAddress.ModifiedOn = DateTime.Now;
+                                LicenseAddress.ReceiptDate = DateTime.Now;
 
                                 InsuranceContext.LicenceDiskDeliveryAddresses.Insert(LicenseAddress);
 
@@ -840,7 +850,18 @@ namespace GensureAPIv2.Controllers
                                 DbEntry.isQuotation = true;
                             }
 
-                            InsuranceContext.SummaryDetails.Insert(DbEntry);
+
+                            try
+                            {
+                                InsuranceContext.SummaryDetails.Insert(DbEntry);
+                            }
+                            catch(Exception ex)
+                            {
+                                logService.WriteLog("ex save summary: " + ex.Message);
+                            }
+
+
+
                             //model.Id = DbEntry.Id;
                             model.SummaryDetailModel.Id = DbEntry.Id;
                             summaryModel.Id = DbEntry.Id;
@@ -877,7 +898,15 @@ namespace GensureAPIv2.Controllers
 
                             summarydata.CustomerId = customer.Id;
 
-                            InsuranceContext.SummaryDetails.Update(summarydata);
+                            try
+                            {
+                                InsuranceContext.SummaryDetails.Update(summarydata);
+                            }
+                            catch (Exception ex)
+                            {
+                                logService.WriteLog("ex update summary: " + ex.Message);
+                            }
+
                             summaryModel.Id = summarydata.Id;
                         }
 
@@ -923,9 +952,7 @@ namespace GensureAPIv2.Controllers
                             }
                             catch (Exception ex)
                             {
-                                //Insurance.Service.EmailService log = new Insurance.Service.EmailService();
-                                //log.WriteLog("exception during insert vehicel :" + ex.Message);
-
+                                logService.WriteLog("ex save summary vehicle: " + ex.Message);
                             }
 
                         }
@@ -1313,10 +1340,7 @@ namespace GensureAPIv2.Controllers
             }
             catch (Exception ex)
             {
-
-                logService.WriteLog(ex.Message);
-
-                // return RedirectToAction("SummaryDetail");
+                logService.WriteLog("SubmitPlane: " +ex.Message);
             }
             // return result1;
 
@@ -1806,6 +1830,8 @@ namespace GensureAPIv2.Controllers
             //  PaymentMethod = "Pin Pad";
             string currencyName = "";
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
+            EmailService logService = new EmailService();
+        
             try
             {
                 var currencylist = InsuranceContext.Currencies.All();
@@ -1823,6 +1849,9 @@ namespace GensureAPIv2.Controllers
                     }
                     var SummaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.All(where: $"SummaryDetailId={summaryDetail.Id}").ToList();
                     var vehicle = InsuranceContext.VehicleDetails.Single(SummaryVehicleDetails[0].VehicleDetailsId);
+
+                    logService.WriteLog("SavePaymentinformation : " + vehicle.RegistrationNo);
+
                     var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
                     var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
 
@@ -1865,15 +1894,104 @@ namespace GensureAPIv2.Controllers
                     bool userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
                     var dbPaymentInformation = InsuranceContext.PaymentInformations.Single(where: $"SummaryDetailId='{summaryDetail.Id}'");
-                    if (dbPaymentInformation == null)
+
+                    try
                     {
-                        InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+                        if (dbPaymentInformation == null)
+                        {
+                            InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
+                        }
+                        else
+                        {
+                            objSaveDetailListModel.Id = dbPaymentInformation.Id;
+                            InsuranceContext.PaymentInformations.Update(objSaveDetailListModel);
+                        }
                     }
-                    else
+                    catch(Exception ex)
                     {
-                        objSaveDetailListModel.Id = dbPaymentInformation.Id;
-                        InsuranceContext.PaymentInformations.Update(objSaveDetailListModel);
+                        logService.WriteLog("SaveOrUpdatePay : " + ex.Message);
                     }
+                    
+  
+                    try
+                    {
+
+                        // add Invoice payment module
+                        ReceiptAndPayment InvPayment = new ReceiptAndPayment();
+                        InvPayment.Amount = (summaryDetail.TotalPremium.Value * -1);
+                        InvPayment.CreatedBy = 33689; // almmanager@gene.co.zw user id
+                        InvPayment.Description = vehicle.ALMBranchId.ToString();
+                        InvPayment.policyNumber = policy.PolicyNumber.ToUpper();
+                        InvPayment.policyId = policy.Id;
+                        InvPayment.CreatedOn = DateTime.Now;
+                        InvPayment.currency = "--";
+                        InvPayment.type = "invoice";
+                        InvPayment.reference = "--";
+                        InvPayment.paymentMethod = "--";
+                        InsuranceContext.ReceiptAndPayments.Insert(InvPayment);
+
+
+                        // add receipt payment module
+
+                        ReceiptAndPayment payment = new ReceiptAndPayment();
+                        payment.Amount = (summaryDetail.TotalPremium.Value);
+                        payment.CreatedBy = 33689; // almmanager@gene.co.zw user id
+                        payment.Description = vehicle.ALMBranchId.ToString();
+                        payment.policyNumber = policy.PolicyNumber.ToUpper();
+                        payment.policyId = policy.Id;
+                        payment.CreatedOn = DateTime.Now;
+                        payment.currency = "--";
+                        payment.type = "reciept";
+                        payment.reference = "--";
+                        payment.paymentMethod = "--";
+                        InsuranceContext.ReceiptAndPayments.Insert(payment);
+
+
+                        // save account policy details to trac calculation
+                        VehicleService vehicleService = new VehicleService();
+                        AccountPolicyModel accountPolicyModel = new AccountPolicyModel();
+                        accountPolicyModel.PolicyId = policy.Id;
+                        accountPolicyModel.PolicyNumber = policy.PolicyNumber;
+                        accountPolicyModel.RecieptAndPaymentId = payment.Id;
+
+                        List<VehicleDetail> listVehicle = InsuranceContext.VehicleDetails.All(where: "PolicyId = " + vehicle.PolicyId + "and IsActive=1").ToList();
+
+
+                        decimal? accountPremium = 0;
+                        decimal? StampDuty = 0;
+                        decimal? ztscLevy = 0;
+                        decimal? ZinaraLicenseCost = 0;
+                        decimal? radioLicense = 0;
+
+                        foreach (var item in listVehicle)
+                        {
+                            accountPremium += item.Premium;
+                            StampDuty += item.StampDuty;
+                            ztscLevy += item.ZTSCLevy;
+                            ZinaraLicenseCost += item.VehicleLicenceFee;
+
+                            if (item.IncludeRadioLicenseCost == true)
+                                radioLicense += item.RadioLicenseCost;
+
+                        }
+
+
+                        accountPolicyModel.Premium = accountPremium;
+                        accountPolicyModel.StampDuty = StampDuty;
+                        accountPolicyModel.ZtscLevy = ztscLevy;
+                        accountPolicyModel.ZinaraLicenseCost = ZinaraLicenseCost;
+                        accountPolicyModel.RadioLicenseCost = radioLicense;
+                        accountPolicyModel.Status = "New";
+                        vehicleService.SaveAccountPolicy(accountPolicyModel);
+
+                    }
+                    catch(Exception ex)
+                    {
+                        logService.WriteLog("ReceiptAndPayment : " + ex.Message);
+                    }
+                    
+
+
 
                     //ApproveVRNToIceCash(GetSummaryid.Id);
 
@@ -2083,6 +2201,8 @@ namespace GensureAPIv2.Controllers
             }
             catch (Exception ex)
             {
+                logService.WriteLog("Paymentinformation ex : " + ex.Message);
+
                 throw ex;
             }
             return objMessage;

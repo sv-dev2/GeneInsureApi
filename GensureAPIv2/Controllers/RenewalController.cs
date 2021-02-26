@@ -77,12 +77,12 @@ namespace GensureAPIv2.Controllers
                                         if (customer != null)
                                         {
 
-                                            if(model.IdNumber!="" && model.IdNumber != "Id Number" && model.IdNumber != "Business Id" && customer.NationalIdentificationNumber!=model.IdNumber)
+                                            if (model.IdNumber != "" && model.IdNumber != "Id Number" && model.IdNumber != "Business Id" && customer.NationalIdentificationNumber != model.IdNumber)
                                             {
                                                 custmvehicle.ErrorMessage = "Identification number doesn't match.";
                                                 return custmvehicle;
                                             }
-                                                
+
 
                                             custmvehicle.Cutomer = Mapper.Map<Customer, CustomersDetailsModel>(customer);
                                             custmvehicle.riskdetail = Mapper.Map<VehicleDetail, RiskDetailModel>(item);
@@ -104,7 +104,7 @@ namespace GensureAPIv2.Controllers
 
             }
 
-            if(custmvehicle.Cutomer.Id==0)
+            if (custmvehicle.Cutomer.Id == 0)
             {
                 custmvehicle.ErrorMessage = "Registration number is not found for renew.";
             }
@@ -324,7 +324,7 @@ namespace GensureAPIv2.Controllers
                     {
 
                         // Get renew policy number
-                   
+
                         //foreach (var item in vehicle.ToList())
                         //{
                         var _item = vehicle;
@@ -407,7 +407,7 @@ namespace GensureAPIv2.Controllers
                                 LicenseAddress.CreatedOn = DateTime.Now;
                                 LicenseAddress.ModifiedBy = model.CustomerModel.Id;
                                 LicenseAddress.ModifiedOn = DateTime.Now;
-
+                                LicenseAddress.ReceiptDate = DateTime.Now;
                                 InsuranceContext.LicenceDiskDeliveryAddresses.Insert(LicenseAddress);
 
 
@@ -690,9 +690,9 @@ namespace GensureAPIv2.Controllers
                                 summarydata.CreatedOn = DateTime.Now;
 
 
-                              
-                              summarydata.CreatedBy = customerDetials.Id;
-                                
+
+                                summarydata.CreatedBy = customerDetials.Id;
+
 
 
                                 summarydata.CreatedOn = DateTime.Now;
@@ -1458,6 +1458,84 @@ namespace GensureAPIv2.Controllers
                     objSaveDetailListModel.Id = dbPaymentInformation.Id;
                     InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
 
+                    try
+                    {
+
+                        // add Invoice payment module
+                        ReceiptAndPayment InvPayment = new ReceiptAndPayment();
+                        InvPayment.Amount = (summaryDetail.TotalPremium.Value * -1);
+                        InvPayment.CreatedBy = 33689; // almmanager@gene.co.zw user id
+                        InvPayment.Description = vehicle.ALMBranchId.ToString();
+                        InvPayment.policyNumber = policy.PolicyNumber.ToUpper();
+                        InvPayment.policyId = policy.Id;
+                        InvPayment.CreatedOn = DateTime.Now;
+                        InvPayment.currency = "--";
+                        InvPayment.type = "invoice";
+                        InvPayment.reference = "--";
+                        InvPayment.paymentMethod = "--";
+                        InsuranceContext.ReceiptAndPayments.Insert(InvPayment);
+
+
+                        // add receipt payment module
+                        ReceiptAndPayment payment = new ReceiptAndPayment();
+                        payment.Amount = (summaryDetail.TotalPremium.Value);
+                        payment.CreatedBy = 33689; // almmanager@gene.co.zw user id
+                        payment.Description = vehicle.ALMBranchId.ToString();
+                        payment.policyNumber = policy.PolicyNumber.ToUpper();
+                        payment.policyId = policy.Id;
+                        payment.CreatedOn = DateTime.Now;
+                        payment.currency = "--";
+                        payment.type = "reciept";
+                        payment.reference = "--";
+                        payment.paymentMethod = "--";
+                        InsuranceContext.ReceiptAndPayments.Insert(payment);
+
+
+                        // save account policy details to trac calculation
+                        VehicleService vehicleService = new VehicleService();
+                        AccountPolicyModel accountPolicyModel = new AccountPolicyModel();
+                        accountPolicyModel.PolicyId = policy.Id;
+                        accountPolicyModel.PolicyNumber = vehicle.RenewPolicyNumber;
+                        accountPolicyModel.RecieptAndPaymentId = payment.Id;
+
+                        List<VehicleDetail> listVehicle = InsuranceContext.VehicleDetails.All(where: "PolicyId = " + vehicle.PolicyId + "and IsActive=1").ToList();
+
+
+                        decimal? accountPremium = 0;
+                        decimal? StampDuty = 0;
+                        decimal? ztscLevy = 0;
+                        decimal? ZinaraLicenseCost = 0;
+                        decimal? radioLicense = 0;
+
+                        foreach (var item in listVehicle)
+                        {
+                            accountPremium += item.Premium;
+                            StampDuty += item.StampDuty;
+                            ztscLevy += item.ZTSCLevy;
+                            ZinaraLicenseCost += item.VehicleLicenceFee;
+
+                            if (item.IncludeRadioLicenseCost == true)
+                                radioLicense += item.RadioLicenseCost;
+
+                        }
+
+
+                        accountPolicyModel.Premium = accountPremium;
+                        accountPolicyModel.StampDuty = StampDuty;
+                        accountPolicyModel.ZtscLevy = ztscLevy;
+                        accountPolicyModel.ZinaraLicenseCost = ZinaraLicenseCost;
+                        accountPolicyModel.RadioLicenseCost = radioLicense;
+                        accountPolicyModel.Status = "Renew";
+
+                        vehicleService.SaveAccountPolicy(accountPolicyModel);
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
                     //if (dbPaymentInformation == null)
                     //{
                     //    InsuranceContext.PaymentInformations.Insert(objSaveDetailListModel);
@@ -1567,7 +1645,7 @@ namespace GensureAPIv2.Controllers
                     MiscellaneousService.AddLoyaltyPoints(summaryDetail.CustomerId.Value, policy.Id, Mapper.Map<VehicleDetail, RiskDetailModel>(vehicle), currencyName, user.Email, filepath);
                     //}
                     ListOfVehicles.Add(vehicle);
-                   
+
 
                     decimal totalpaymentdue = 0.00m;
 
@@ -1672,7 +1750,7 @@ namespace GensureAPIv2.Controllers
         public string LoggedUserEmail()
         {
 
-              return System.Configuration.ConfigurationManager.AppSettings["AlternetEmail"];
+            return System.Configuration.ConfigurationManager.AppSettings["AlternetEmail"];
 
         }
 

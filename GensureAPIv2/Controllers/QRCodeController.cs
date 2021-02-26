@@ -382,13 +382,27 @@ namespace GensureAPIv2.Controllers
         [AllowAnonymous]
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("GetVehicleDetails")]
-        public QRCodePolicyDetails GetVehicleDetails(string vrn="", string policyNumber="")
+        public QRCodePolicyDetails GetVehicleDetails(string vrn = "", string policyNumber = "")
         {
 
             QRCodePolicyDetails details = new QRCodePolicyDetails();
             try
             {
                 details.Policies = new List<QRCodeModel>();
+
+                int lenthPolicy = 1;
+
+                if (!String.IsNullOrEmpty(policyNumber))
+                {
+                    var splitPolicy = policyNumber.Split('-');
+
+                    if (Convert.ToInt32(splitPolicy[1]) > 1)
+                    {
+                        lenthPolicy = 2;
+                    }
+
+                }
+
 
 
                 // InsuranceContext.CertSerialNoDetails
@@ -404,15 +418,17 @@ namespace GensureAPIv2.Controllers
                 query += " Left Join SummaryDetail On SummaryVehicleDetail.SummaryDetailId=SummaryDetail.Id";
                 query += " left join AspNetUsers on Customer.UserID=AspNetUsers.Id";
                 query += " left join PaymentMethod on SummaryDetail.PaymentMethodId= PaymentMethod.Id ";
-               // query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId ";
+                // query += " left join CertSerialNoDetail on PolicyDetail.Id=CertSerialNoDetail.PolicyId ";
                 query += " where  SummaryDetail.isQuotation=0 and VehicleDetail.isactive=1";
 
-                if(!string.IsNullOrEmpty(vrn))
+                if (!string.IsNullOrEmpty(vrn))
                     query += " and VehicleDetail.RegistrationNo='" + vrn + "'";
 
-                if (!string.IsNullOrEmpty(policyNumber))
+                if (!string.IsNullOrEmpty(policyNumber) && lenthPolicy==1)
                     query += " and PolicyDetail.PolicyNumber='" + policyNumber + "'";
 
+                if (!string.IsNullOrEmpty(policyNumber) && lenthPolicy > 1)
+                    query += " and VehicleDetail.RenewPolicyNumber='" + policyNumber + "'";
 
 
                 query += " order by VehicleDetail.Id desc";
@@ -449,18 +465,18 @@ namespace GensureAPIv2.Controllers
                     if (vehicleDetail != null)
                     {
                         renewPolicyNumber = policyNumber;
-                    
+
                     }
                 }
 
 
                 foreach (var item in list)
                 {
-                    var recQuery = "SELECT  top 1 * FROM ReceiptModuleHistory where policyid= "+item.PolicyId + " order by Id Desc";
+                    var recQuery = "SELECT  top 1 * FROM ReceiptModuleHistory where policyid= " + item.PolicyId + " and (IsActive is null or IsActive=1) order by Id Desc";
 
                     if (!string.IsNullOrEmpty(renewPolicyNumber))
                     {
-                        recQuery = "select top 1 * from ReceiptModuleHistory where RenewPolicyNumber='" + renewPolicyNumber + "' order by id desc";
+                        recQuery = "select top 1 * from ReceiptModuleHistory where RenewPolicyNumber='" + renewPolicyNumber + "' and (IsActive is null or IsActive=1) order by id desc";
                     }
 
 
@@ -468,24 +484,24 @@ namespace GensureAPIv2.Controllers
                     {
                         Id = x.Id,
                         AmountDue = x.AmountDue,
-                        Balance= x.Balance
+                        Balance = x.Balance
                     }).FirstOrDefault();
 
-                    if(receipt!=null)
+                    if (receipt != null)
                     {
                         details.AmountDue += Convert.ToDecimal(receipt.AmountDue);
                         details.Balance += Convert.ToDecimal(receipt.Balance);
                     }
                     else
                     {
-                            details.Balance = list.Sum(c => c.TotalPremium); // default balane
+                        details.Balance = list.Sum(c => c.TotalPremium); // default balane
                     }
                 }
 
                 details.Policies = list;
                 details.Message = "Records found.";
 
-               
+
 
 
                 var query1 = "SELECT  top 1 [Id] FROM ReceiptModuleHistory order by Id Desc";
@@ -495,10 +511,10 @@ namespace GensureAPIv2.Controllers
                 }).FirstOrDefault();
 
 
-                if(receipt1!=null)
+                if (receipt1 != null)
                 {
                     details.RecieptNumber = receipt1 == null ? 100000 : receipt1.Id + 1;
-                    if (list.Count()>0)
+                    if (list.Count() > 0)
                     {
                         details.AmountDue = list.Sum(c => c.TotalPremium);
                         details.Message = "Records found.";
@@ -508,9 +524,6 @@ namespace GensureAPIv2.Controllers
                         details.Message = "Records not found.";
                     }
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -702,7 +715,7 @@ namespace GensureAPIv2.Controllers
         {
             //   ReceiptModule   model = new ReceiptModule { Amountdue= 32, Balance= "2.6000000000000014",	CreatedBy= 24633,	CustomerName= "dsdfsdf gdfgdfg", DatePosted= DateTime.Now,	Paymentmethod= "Cash",Receiptamount= 30, Policyno= "GMCC190002278-4", transactionreference= "testing"};
 
-
+            EmailService logService = new EmailService();
 
             string SignaturePath = HttpContext.Current.Server.MapPath("~/Signature");
             string ActualFilePath = string.Empty;
@@ -716,15 +729,25 @@ namespace GensureAPIv2.Controllers
 
             int customerId = 0;
 
-            if(model.CreatedBy==0)
+            if (model.CreatedBy == 0)
             {
                 reciept.Message = "Created by is not passed, please contact to administrator.";
+                return reciept;
+            }
+
+            if(model.Balance!=null &&  Convert.ToDecimal(model.Balance)<0)
+            {
+                reciept.Message = "Balence amount is in negative.";
                 return reciept;
             }
 
 
             try
             {
+               
+                
+                logService.WriteLog("start receipt : " + model.Policyno);
+
                 var paymentmethod = model.Paymentmethod;
                 if (paymentmethod != null)
                 {
@@ -822,6 +845,12 @@ namespace GensureAPIv2.Controllers
                         data.PolicyNumber = model.Policyno;
                         data.AmountDue = model.Amountdue;
                         data.AmountPaid = model.Receiptamount;
+
+                        //if(model.Balance!=null)
+                        //{
+                        //    data.Balance = Math.Round(Convert.ToDecimal(model.Balance), 2).ToString();
+                        //}
+
                         data.Balance = model.Balance;
                         data.TransactionReference = model.transactionreference;
                         data.DatePosted = Convert.ToDateTime(model.DatePosted);
@@ -836,7 +865,9 @@ namespace GensureAPIv2.Controllers
 
                         data.SignaturePath = savedsignaturepath;
                         data.CreatedOn = DateTime.Now;
-
+                        data.ModifiedOn = DateTime.Now;
+                        data.ModifiedBy = model.CreatedBy;
+                        data.IsActive = true;
                         //  data.SignaturePath = "Signature/GFD10000kk-2/Image.img";
 
 
@@ -878,7 +909,6 @@ namespace GensureAPIv2.Controllers
                         }
 
 
-
                         reciept.Message = "Success.";
                         reciept.PolicyNumber = model.Policyno;
 
@@ -888,6 +918,8 @@ namespace GensureAPIv2.Controllers
             catch (Exception ex)
             {
                 reciept.Message = "Excepton occured." + ex.Message;
+               // EmailService logService = new EmailService();
+                logService.WriteLog("Save reciept by mobile : " + ex.Message);
             }
             return reciept;
         }
@@ -897,7 +929,7 @@ namespace GensureAPIv2.Controllers
         {
             List<RecieptPaymentMethod> list = new List<RecieptPaymentMethod>();
 
-            list.Add( new RecieptPaymentMethod {PaymentId=1, PaymentName= "Cash" });
+            list.Add(new RecieptPaymentMethod { PaymentId = 1, PaymentName = "Cash" });
 
             list.Add(new RecieptPaymentMethod { PaymentId = 2, PaymentName = "Ecocash" });
 

@@ -47,6 +47,17 @@ namespace GensureAPIv2.Models
             //PayLater = 1008
         }
 
+        public enum PolicyAccountType
+        {
+            Premium = 1,
+            StampDuty = 2,
+            ZtscLevy = 3,
+            RadioLicense = 4,
+            ZinaraLicense = 5
+
+        }
+
+
 
     }
 }
