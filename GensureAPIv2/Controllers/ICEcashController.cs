@@ -410,7 +410,7 @@ namespace GensureAPIv2.Controllers
                         {
                             InsuranceContext.Customers.Insert(customer);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             logService.WriteLog("Save customer: " + model.RiskDetailModel[0].RegistrationNo + " ex:" + ex.Message);
                         }
@@ -509,19 +509,19 @@ namespace GensureAPIv2.Controllers
                     {
                         foreach (var item in vehicle.ToList())
                         {
-                            if(item.PaymentTermId==12) // for handling exception
+                            if (item.PaymentTermId == 12) // for handling exception
                                 item.PaymentTermId = 1;
 
                             item.IsMobile = true;
 
                             // to handle the exception if make and model is not comming correct
-                            
+
                             var vehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription= '{item.MakeId}'");
-                            if(vehicleMake!=null)
+                            if (vehicleMake != null)
                             {
                                 item.MakeId = vehicleMake.MakeCode;
                                 var vehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription= '{item.ModelId}' and MakeCode ='{item.MakeId}' ");
-                                if(vehicleModel!=null)
+                                if (vehicleModel != null)
                                     item.ModelId = vehicleModel.ModelCode;
                             }
 
@@ -855,7 +855,7 @@ namespace GensureAPIv2.Controllers
                             {
                                 InsuranceContext.SummaryDetails.Insert(DbEntry);
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 logService.WriteLog("ex save summary: " + ex.Message);
                             }
@@ -1340,7 +1340,7 @@ namespace GensureAPIv2.Controllers
             }
             catch (Exception ex)
             {
-                logService.WriteLog("SubmitPlane: " +ex.Message);
+                logService.WriteLog("SubmitPlane: " + ex.Message);
             }
             // return result1;
 
@@ -1377,12 +1377,12 @@ namespace GensureAPIv2.Controllers
                     vehileDetails.LicExpiryDate = LicExpiryDate.ToShortDateString();
                     InsuranceContext.VehicleDetails.Update(vehileDetails);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
-                }         
+                }
             }
-             
+
         }
 
 
@@ -1831,7 +1831,7 @@ namespace GensureAPIv2.Controllers
             string currencyName = "";
             PaymentInformation objSaveDetailListModel = new PaymentInformation();
             EmailService logService = new EmailService();
-        
+
             try
             {
                 var currencylist = InsuranceContext.Currencies.All();
@@ -1907,12 +1907,12 @@ namespace GensureAPIv2.Controllers
                             InsuranceContext.PaymentInformations.Update(objSaveDetailListModel);
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         logService.WriteLog("SaveOrUpdatePay : " + ex.Message);
                     }
-                    
-  
+
+
                     try
                     {
 
@@ -1985,11 +1985,11 @@ namespace GensureAPIv2.Controllers
                         vehicleService.SaveAccountPolicy(accountPolicyModel);
 
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         logService.WriteLog("ReceiptAndPayment : " + ex.Message);
                     }
-                    
+
 
 
 
@@ -2082,12 +2082,12 @@ namespace GensureAPIv2.Controllers
                     }
 
                     string Recieptbody = "";
-                    if (vehicle.IceCashRequest=="License")
-                         Recieptbody = "Hello " + customer.FirstName + " Payment: " + summaryDetail.TotalPremium + ". TransactionId: " + objPaymentInfo.TransactionId + " Thanks for using GeneInsure ALM. Switch to Gene for added convenience";
+                    if (vehicle.IceCashRequest == "License")
+                        Recieptbody = "Hello " + customer.FirstName + " Payment: " + summaryDetail.TotalPremium + ". TransactionId: " + objPaymentInfo.TransactionId + " Thanks for using GeneInsure ALM. Switch to Gene for added convenience";
                     else
-                     Recieptbody = "Hello " + customer.FirstName + " Welcome to GeneInsure. TransactionId :" + objPaymentInfo.TransactionId + " Payment: " + currencyName + " " + Convert.ToString(summaryDetail.AmountPaid) + IceCashPolicyNumber + " Thanks.";
+                        Recieptbody = "Hello " + customer.FirstName + " Welcome to GeneInsure. TransactionId :" + objPaymentInfo.TransactionId + " Payment: " + currencyName + " " + Convert.ToString(summaryDetail.AmountPaid) + IceCashPolicyNumber + " Thanks.";
 
-                    
+
                     var Recieptresult = await objsmsService.SendSMS(customer.Countrycode.Replace("+", "") + user.PhoneNumber, Recieptbody);
 
                     SmsLog objRecieptsmslog = new SmsLog()
@@ -2166,8 +2166,29 @@ namespace GensureAPIv2.Controllers
                     var paymentTerm = ePaymentTermData.FirstOrDefault(p => p.ID == vehicle.PaymentTermId);
                     string SeheduleMotorPath = "/Views/Shared/EmaiTemplates/SeheduleMotor.cshtml";
                     string MotorBody = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(SeheduleMotorPath));
-                    //var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
-                    var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##Currency##", currencyName).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+
+                    //var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber).Replace("##paht##", filepath).Replace("##Cellnumber##", user.PhoneNumber).Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email).Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy")).Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy")).Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover).Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)")).Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty)).Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies)).Replace("##PremiumDue##", Convert.ToString(summaryDetail.TotalPremium - summaryDetail.TotalStampDuty - summaryDetail.TotalZTSCLevies - summaryDetail.TotalRadioLicenseCost - ListOfVehicles.Sum(x => x.VehicleLicenceFee) + ListOfVehicles.Sum(x => x.Discount))).Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount)).Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##Currency##", currencyName).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount)).Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount))).Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+
+                    string AgentDetials = "";
+                    var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber)
+                    .Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToShortDateString())
+                    .Replace("##AgentDetials##", AgentDetials)
+                    .Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber)
+                    .Replace("##currencyName##", currencyName)
+                    // .Replace("##QRpath##", path)
+                    .Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email)
+                    .Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy"))
+                    .Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy"))
+                    .Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover)
+                    .Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)"))
+                    .Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty))
+                    .Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies))
+                    .Replace("##PremiumDue##", Convert.ToString(ListOfVehicles.Sum(x => x.Premium) + ListOfVehicles.Sum(x => x.Discount)))
+                    .Replace("##PenaltiesAmt##", Convert.ToString(ListOfVehicles.Sum(x => x.PenaltiesAmt)))
+                    .Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount))
+                    .Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount))
+                    .Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount)))
+                    .Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
 
                     #region Invoice PDF
@@ -2415,7 +2436,7 @@ namespace GensureAPIv2.Controllers
                     details.CreatedOn = DateTime.Now;
                     details.PolicyId = vehicleDetails.PolicyId;
                     details.VRN = vehicleDetails.RegistrationNo;
-                    details.CreatedBy =  Convert.ToInt32(vehicleDetails.CustomerId);
+                    details.CreatedBy = Convert.ToInt32(vehicleDetails.CustomerId);
                     InsuranceContext.CertSerialNoDetails.Insert(details);
 
                 }
@@ -2430,7 +2451,7 @@ namespace GensureAPIv2.Controllers
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("GetEndorsementPolicy")]
         public PayLaterPolicyInfo GetEndorsementPolicy(string QRCode)
-        {          
+        {
             PayLaterPolicyInfo info = new PayLaterPolicyInfo();
             try
             {
@@ -2478,6 +2499,29 @@ namespace GensureAPIv2.Controllers
         {
             // AlternetEmail
             return System.Configuration.ConfigurationManager.AppSettings["AlternetEmail"];
+        }
+
+        public bool UpdatePosInitilization()
+        {
+            string query = "select * from PosInitialization where (CONVERT(date, Initializationdate) >= convert(date, GETDATE(), 101))";
+
+            bool IsActive = false;
+            var result = InsuranceContext.Query(query).
+               Select(x => new PosInitialization()
+               {
+                   Id = x.Id
+               }).FirstOrDefault();
+
+
+            if (result != null)
+            {
+                IsActive = true;
+                PosInitialization pos = new PosInitialization();
+                pos.Initializationdate = DateTime.Now;
+                InsuranceContext.PosInitializations.Insert();
+            }
+
+            return IsActive;
         }
 
         public class checkVRNwithICEcashResponse
