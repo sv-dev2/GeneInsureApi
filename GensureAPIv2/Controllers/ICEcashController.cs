@@ -2501,27 +2501,45 @@ namespace GensureAPIv2.Controllers
             return System.Configuration.ConfigurationManager.AppSettings["AlternetEmail"];
         }
 
-        public bool UpdatePosInitilization()
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("UpdatePosInitilization")]
+        public PosInitModel UpdatePosInitilization()
         {
-            string query = "select * from PosInitialization where (CONVERT(date, Initializationdate) >= convert(date, GETDATE(), 101))";
+            EmailService logService = new EmailService();
+            logService.WriteLog("UpdatePosInitilization : " + DateTime.Now);
 
-            bool IsActive = false;
-            var result = InsuranceContext.Query(query).
-               Select(x => new PosInitialization()
-               {
-                   Id = x.Id
-               }).FirstOrDefault();
+            PosInitModel mod = new PosInitModel();
+            mod.IsActive = true;
 
-
-            if (result != null)
+            try
             {
-                IsActive = true;
-                PosInitialization pos = new PosInitialization();
-                pos.Initializationdate = DateTime.Now;
-                InsuranceContext.PosInitializations.Insert();
-            }
+                string query = "select * from PosInitialization where (CONVERT(date, Initializationdate) >= convert(date, GETDATE(), 101))";
 
-            return IsActive;
+                
+                var result = InsuranceContext.Query(query).
+                   Select(x => new PosInitialization()
+                   {
+                       Id = x.Id
+                   }).FirstOrDefault();
+
+
+                if (result == null)
+                {
+                    mod.IsActive = false;
+                    result = new PosInitialization();
+                    //  PosInitialization pos = new PosInitialization();
+                    result.Id = 1;
+                    result.Initializationdate = DateTime.Now;
+                    InsuranceContext.PosInitializations.Update(result);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logService.WriteLog("UpdatePosInitilization  ex: " + ex.Message);
+            }
+            return mod;
         }
 
         public class checkVRNwithICEcashResponse
