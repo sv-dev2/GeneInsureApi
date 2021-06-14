@@ -2146,6 +2146,14 @@ namespace GensureAPIv2.Controllers
                         PassengerAccidentCoverAmount = PassengerAccidentCoverAmount + Convert.ToDecimal(item.PassengerAccidentCoverAmount);
                         ExcessAmount = ExcessAmount + Convert.ToDecimal(item.ExcessAmount);
 
+                        var productDetail = InsuranceContext.Products.Single(Convert.ToInt32(item.ProductId));
+
+                        var taxClassDetials = InsuranceContext.VehicleTaxClasses.Single(item.TaxClassId);
+                        string taxClassDetailsDesc = "";
+                        if (taxClassDetials != null)
+                            taxClassDetailsDesc = taxClassDetials.Description;
+
+
                         var paymentTermVehicel = ePaymentTermData.FirstOrDefault(p => p.ID == item.PaymentTermId);
 
                         string paymentTermsName = "";
@@ -2158,8 +2166,46 @@ namespace GensureAPIv2.Controllers
 
                         string policyPeriod = item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " - " + item.CoverEndDate.Value.ToString("dd/MM/yyyy");
 
-                        //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>$" + Convert.ToString(item.Premium) + "</font></td></tr>";
-                        Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td>" + item.CoverNote + "  </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + Convert.ToString(item.Premium) + "</font></td></tr>";
+                        decimal? premiumDue = item.Premium + item.StampDuty + item.ZTSCLevy + item.VehicleLicenceFee + item.RadioLicenseCost;
+
+
+                        //Summeryofcover += "<tr><td style='padding: 7px 10px; font - size:15px;'>" + item.RegistrationNo + " </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + vehicledescription + "</font></td><td>" + item.CoverNote + "  </td> <td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + currencyName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + item.SumInsured + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + InsuranceContext.VehicleUsages.All(Convert.ToString(item.VehicleUsage)).Select(x => x.VehUsage).FirstOrDefault() + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + policyPeriod + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + paymentTermsName + "</font></td><td style='padding: 7px 10px; font - size:15px;'><font size='2'>" + Convert.ToString(item.Premium) + "</font></td></tr>";
+
+                        var vehicleUsage = InsuranceContext.VehicleUsages.Single(Convert.ToInt32(item.VehicleUsage));
+                        string vehicleUsageName = "";
+                        if (vehicleUsage != null)
+                            vehicleUsageName = vehicleUsage.VehUsage;
+
+                        Summeryofcover += "<table border='0' cellspacing='0' cellpadding='0' style='border-collapse:collapse; width:100%;  border-color:#ffcc00; border-style:solid;' >";
+                        Summeryofcover += "<tr> <td  bgcolor='#D3D3D3' colspan='2' style='background:#D3D3D3; color:#000;text-align:left; padding:10px;   word-break: break-all;'> <font size='1'><b> GENE-INSURE </b></font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Cover Note # </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.CoverNote + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px; '> <font size='1'> Transaction Date </font> </td> <td style='padding: 1px 10px; '> <font size='1'>" + item.TransactionDate.Value.ToShortDateString() + " </font> </td> </tr>";
+                        Summeryofcover += " </table>";
+
+                        Summeryofcover += "<table  border='0' cellspacing='0' cellpadding='0' style='border-collapse:collapse; width:100% border-color:#ffcc00; border-style:solid; width:900px;' >";
+                        Summeryofcover += "<tr> <td  bgcolor='#D3D3D3' colspan='2' style='background:#D3D3D3; color:#000;text-align:left; padding:10px;word-break: break-all;'> <font size='1'><b> CERTIFICATE OF MOTOR INSURANCE </b> </font>  </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Insurance Type </font> </td> <td style='padding: 1px 10px;'> <font size='1'>Road Traffic Act </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Vehicle Type </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + (item.CoverTypeId == 4 ? eCoverType.Comprehensive.ToString() : eCoverType.ThirdParty.ToString()) + " " + vehicleUsageName + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Start Date </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.CoverStartDate.Value.ToString("dd/MM/yyyy") + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> End Date </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.CoverEndDate.Value.ToString("dd/MM/yyyy") + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'>Policy Period </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + paymentTermsName + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Premium </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.Premium + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Gvt Levy </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.ZTSCLevy + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Stamp Duty </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.StampDuty + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Premium Due </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + Math.Round(Convert.ToDecimal(premiumDue), 2) + " </font> </td> </tr>";
+                        Summeryofcover += " </table>";
+
+                        // #ddd
+                        Summeryofcover += "<table  border='0' cellspacing='0' cellpadding='0' style='border-collapse:collapse; width:100%;  border-color:#ffcc00; border-style:solid' >";
+                        Summeryofcover += "<tr> <td  bgcolor='#D3D3D3' colspan='2' style='background:#D3D3D3; color:#000;text-align:left; padding:10px;  word-break: break-all;'> <font size='1'><b> VEHICLE DETAILS </b></font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Vehicle Reg. Number </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.RegistrationNo + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Vehicle Type </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + productDetail.ProductName + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Tax Class </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + taxClassDetailsDesc + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px; font-size:15px;'> <font size='1'> Sum Insured </font> </td> <td style='padding: 1px 10px;'> <font size='1'>" + item.SumInsured + " </font> </td> </tr>";
+                        Summeryofcover += "<tr> <td width='100' style='padding: 1px 10px;'> <font size='1'> Vehicle: </font> </td> <td style='padding: 5px 10px;'> <font size='1'>" + vehicledescription + " </font> </td> </tr>";
+                        Summeryofcover += " </table> ";
+
+
                     }
 
 
@@ -2171,24 +2217,25 @@ namespace GensureAPIv2.Controllers
 
                     string AgentDetials = "";
                     var Bodyy = MotorBody.Replace("##PolicyNo##", policy.PolicyNumber)
-                    .Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToShortDateString())
-                    .Replace("##AgentDetials##", AgentDetials)
-                    .Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber)
-                    .Replace("##currencyName##", currencyName)
-                    // .Replace("##QRpath##", path)
-                    .Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email)
-                    .Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy"))
-                    .Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy"))
-                    .Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover)
-                    .Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)"))
-                    .Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty))
-                    .Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies))
-                    .Replace("##PremiumDue##", Convert.ToString(ListOfVehicles.Sum(x => x.Premium) + ListOfVehicles.Sum(x => x.Discount)))
-                    .Replace("##PenaltiesAmt##", Convert.ToString(ListOfVehicles.Sum(x => x.PenaltiesAmt)))
-                    .Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount))
-                    .Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount))
-                    .Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount)))
-                    .Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
+                  .Replace("##TransactionDate##", vehicle.TransactionDate.Value.ToShortDateString())
+                  //.Replace("##AgentDetials##", AgentDetials)
+                  .Replace("##path##", filepath).Replace("##Cellnumber##", user.PhoneNumber)
+                  .Replace("##currencyName##", currencyName)
+                  // .Replace("##QRpath##", path)
+                  .Replace("##FirstName##", customer.FirstName).Replace("##LastName##", customer.LastName).Replace("##Email##", user.Email)
+                  .Replace("##BirthDate##", customer.DateOfBirth.Value.ToString("dd/MM/yyyy"))
+                  .Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy"))
+                  .Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover)
+                  .Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)"))
+
+                  .Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty))
+                  .Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies))
+                  .Replace("##PremiumDue##", Convert.ToString(ListOfVehicles.Sum(x => x.Premium) + ListOfVehicles.Sum(x => x.Discount)))
+                  .Replace("##PenaltiesAmt##", Convert.ToString(ListOfVehicles.Sum(x => x.PenaltiesAmt)))
+                  .Replace("##PostalAddress##", customer.Zipcode).Replace("##ExcessBuyBackAmount##", Convert.ToString(ExcessBuyBackAmount)).Replace("##MedicalExpenses##", Convert.ToString(MedicalExpensesAmount))
+                  .Replace("##PassengerAccidentCover##", Convert.ToString(PassengerAccidentCoverAmount)).Replace("##RoadsideAssistance##", Convert.ToString(RoadsideAssistanceAmount))
+                  .Replace("##RadioLicence##", Convert.ToString(summaryDetail.TotalRadioLicenseCost)).Replace("##Discount##", Convert.ToString(ListOfVehicles.Sum(x => x.Discount)))
+                  .Replace("##ExcessAmount##", Convert.ToString(ExcessAmount)).Replace("##NINumber##", customer.NationalIdentificationNumber).Replace("##VehicleLicenceFee##", Convert.ToString(ListOfVehicles.Sum(x => x.VehicleLicenceFee)));
 
 
                     #region Invoice PDF
@@ -2426,7 +2473,6 @@ namespace GensureAPIv2.Controllers
         {
             try
             {
-
                 var vehicleDetails = InsuranceContext.VehicleDetails.Single(certSerialNoDetail.VehicleId);
                 if (vehicleDetails != null)
                 {
@@ -2438,7 +2484,6 @@ namespace GensureAPIv2.Controllers
                     details.VRN = vehicleDetails.RegistrationNo;
                     details.CreatedBy = Convert.ToInt32(vehicleDetails.CustomerId);
                     InsuranceContext.CertSerialNoDetails.Insert(details);
-
                 }
             }
             catch (Exception ex)
@@ -2495,6 +2540,35 @@ namespace GensureAPIv2.Controllers
             return info;
         }
 
+
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("GetAlmPrintDetialByCode")]
+        public ALMRePrintModel GetAlmPrintDetialByCode(string otp)
+        {
+            var ALMRePrint = new ALMRePrintModel();
+            var query = "select * from ALMRePrint where OTP='" + otp + "' and IsActive=0";
+            var result = InsuranceContext.Query(query).Select(c => new ALMRePrintModel()
+            {
+                Id = c.Id
+            }).ToList();
+            if (result.Count() == 0)
+                ALMRePrint = new ALMRePrintModel();
+            else
+                ALMRePrint.Id = result.FirstOrDefault().Id;
+
+            return ALMRePrint;
+        }
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("SaveAlmPrintDetial")]
+        public void SaveAlmPrintDetial(ALMRePrint print)
+        {
+            InsuranceContext.ALMRePrints.Update(print);
+        }
+
         public string LoggedUserEmail()
         {
             // AlternetEmail
@@ -2508,7 +2582,6 @@ namespace GensureAPIv2.Controllers
         {
             EmailService logService = new EmailService();
             logService.WriteLog("UpdatePosInitilization : " + DateTime.Now);
-
             PosInitModel mod = new PosInitModel();
             mod.IsActive = true;
 
@@ -2516,7 +2589,7 @@ namespace GensureAPIv2.Controllers
             {
                 string query = "select * from PosInitialization where (CONVERT(date, Initializationdate) >= convert(date, GETDATE(), 101))";
 
-                
+
                 var result = InsuranceContext.Query(query).
                    Select(x => new PosInitialization()
                    {

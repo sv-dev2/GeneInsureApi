@@ -157,7 +157,8 @@ namespace GensureAPIv2.Models
             }
             catch (Exception ex)
             {
-
+                EmailService logService = new EmailService();
+                logService.WriteLog("EmailPdf ex : " + ex.Message);
             }
 
             sr.Close();

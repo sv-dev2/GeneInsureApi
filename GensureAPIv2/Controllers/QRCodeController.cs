@@ -424,7 +424,7 @@ namespace GensureAPIv2.Controllers
                 if (!string.IsNullOrEmpty(vrn))
                     query += " and VehicleDetail.RegistrationNo='" + vrn + "'";
 
-                if (!string.IsNullOrEmpty(policyNumber) && lenthPolicy==1)
+                if (!string.IsNullOrEmpty(policyNumber) && lenthPolicy == 1)
                     query += " and PolicyDetail.PolicyNumber='" + policyNumber + "'";
 
                 if (!string.IsNullOrEmpty(policyNumber) && lenthPolicy > 1)
@@ -532,7 +532,6 @@ namespace GensureAPIv2.Controllers
 
             return details;
         }
-
 
 
 
@@ -802,6 +801,7 @@ namespace GensureAPIv2.Controllers
                                     model.SummaryId = SummaryVehicleDetails.SummaryDetailId;
                                 }
                             }
+                           
                         }
 
                         // end renew
@@ -868,6 +868,7 @@ namespace GensureAPIv2.Controllers
                         data.ModifiedOn = DateTime.Now;
                         data.ModifiedBy = model.CreatedBy;
                         data.IsActive = true;
+                        
                         //  data.SignaturePath = "Signature/GFD10000kk-2/Image.img";
 
 

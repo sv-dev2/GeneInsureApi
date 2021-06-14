@@ -69,6 +69,11 @@ namespace GensureAPIv2.Models
         public string PolicyNumber { get; set; }
     }
 
+    public class PosInitModel
+    {
+        public bool IsActive { get; set; }
+    }
+
 
 
 }
