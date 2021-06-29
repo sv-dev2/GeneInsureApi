@@ -99,6 +99,7 @@ namespace GensureAPIv2.Models
     {
         public int Id { get; set; }
         public string BranchName { get; set; }
+        public string Location_Id { get; set; }
     }
 
 

@@ -421,22 +421,31 @@ namespace GensureAPIv2.Controllers
 
         // GET api/Account/GetAllCities
         [AllowAnonymous]
-       [Route("AllBranch")]
+        [Route("AllBranch")]
         public List<BranchModel> GetAllBranch()
         {
-            var list = InsuranceContext.Branches.All().ToList();
+            //var list = InsuranceContext.Branches.All().ToList();
 
-            var branchList = new List<BranchModel>();
+            string query = "select Id, BranchName, Location_Id from Branch";
 
-            foreach (var item in list)
+            List<BranchModel> list = InsuranceContext.Query(query).Select(x => new BranchModel()
             {
-                branchList.Add(new BranchModel { Id = item.Id, BranchName = item.BranchName });
-            }
+                Id = x.Id,
+                BranchName = x.BranchName,
+                Location_Id = x.Location_Id,
+            }).ToList();
+
+            //var branchList = new List<BranchModel>();
+
+            //foreach (var item in list)
+            //{
+            //    branchList.Add(new BranchModel { Id = item.Id, BranchName = item.BranchName });
+            //}
 
             EmailService logService = new EmailService();
 
 
-            return branchList;
+            return list;
         }
 
         // GET api/Account/GetAllCities

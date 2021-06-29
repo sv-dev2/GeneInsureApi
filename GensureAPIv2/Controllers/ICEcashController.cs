@@ -414,11 +414,9 @@ namespace GensureAPIv2.Controllers
                         {
                             logService.WriteLog("Save customer: " + model.RiskDetailModel[0].RegistrationNo + " ex:" + ex.Message);
                         }
-
-
                     }
 
-
+                    SummaryDetailService service = new SummaryDetailService();
                     // -----------------------------------26-Dec--*Add new Code*-------------------------
                     var InsService = new InsurerService();
                     model.PolicyDetail.CurrencyId = InsuranceContext.Currencies.All().FirstOrDefault().Id;
@@ -426,6 +424,8 @@ namespace GensureAPIv2.Controllers
                     model.PolicyDetail.BusinessSourceId = InsuranceContext.BusinessSources.All().FirstOrDefault().Id;
                     model.PolicyDetail.InsurerId = InsService.GetInsurers().FirstOrDefault().Id;
                     model.PolicyDetail.BusinessSourceId = 3;
+                   
+
 
                     var objList1 = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
                     if (objList1 != null)
@@ -439,7 +439,7 @@ namespace GensureAPIv2.Controllers
                         {
                             policyNumber += "0";
                         }
-                        policyNumber += pNumber;
+                        policyNumber += Convert.ToString(service.GetUniquePolicy()); 
                         model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
 
                     }
@@ -2227,7 +2227,6 @@ namespace GensureAPIv2.Controllers
                   .Replace("##Address1##", customer.AddressLine1).Replace("##Address2##", customer.AddressLine2).Replace("##Renewal##", vehicle.RenewalDate.Value.ToString("dd/MM/yyyy"))
                   .Replace("##InceptionDate##", vehicle.CoverStartDate.Value.ToString("dd/MM/yyyy")).Replace("##package##", paymentTerm.Name).Replace("##Summeryofcover##", Summeryofcover)
                   .Replace("##PaymentTerm##", (vehicle.PaymentTermId == 1 ? paymentTerm.Name + "(1 Year)" : paymentTerm.Name + "(" + vehicle.PaymentTermId.ToString() + "Months)"))
-
                   .Replace("##TotalPremiumDue##", Convert.ToString(summaryDetail.TotalPremium)).Replace("##StampDuty##", Convert.ToString(summaryDetail.TotalStampDuty))
                   .Replace("##MotorLevy##", Convert.ToString(summaryDetail.TotalZTSCLevies))
                   .Replace("##PremiumDue##", Convert.ToString(ListOfVehicles.Sum(x => x.Premium) + ListOfVehicles.Sum(x => x.Discount)))
