@@ -416,7 +416,7 @@ namespace GensureAPIv2.Controllers
                         }
                     }
 
-                    SummaryDetailService service = new SummaryDetailService();
+                    SummaryDetailService serviceDetail = new SummaryDetailService();
                     // -----------------------------------26-Dec--*Add new Code*-------------------------
                     var InsService = new InsurerService();
                     model.PolicyDetail.CurrencyId = InsuranceContext.Currencies.All().FirstOrDefault().Id;
@@ -427,34 +427,31 @@ namespace GensureAPIv2.Controllers
                    
 
 
-                    var objList1 = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
-                    if (objList1 != null)
-                    {
-                        string number = objList1.PolicyNumber.Split('-')[0].Substring(4, objList1.PolicyNumber.Length - 6);
-                        long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
-                        string policyNumber = string.Empty;
-                        int length = 7;
-                        length = length - pNumber.ToString().Length;
-                        for (int i = 0; i < length; i++)
-                        {
-                            policyNumber += "0";
-                        }
-                        policyNumber += Convert.ToString(service.GetUniquePolicy()); 
-                        model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
+                    //var objList1 = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
+                    //if (objList1 != null)
+                    //{
+                    //    string number = objList1.PolicyNumber.Split('-')[0].Substring(4, objList1.PolicyNumber.Length - 6);
+                    //    long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
+                    //    string policyNumber = string.Empty;
+                    //    int length = 7;
+                    //    length = length - pNumber.ToString().Length;
+                    //    for (int i = 0; i < length; i++)
+                    //    {
+                    //        policyNumber += "0";
+                    //    }
+                    //    policyNumber += Convert.ToString(service.GetUniquePolicy()); 
+                    //    model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
 
-                    }
-                    else
-                    {
-                        model.PolicyDetail.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"] + "-1";
-                    }
+                    //}
+                    //else
+                    //{
+                    //    model.PolicyDetail.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"] + "-1";
+                    //}
                     //----------------------------------------------------------------------* End*
 
 
-
                     var policy = model.PolicyDetail;
-
                     // Genrate new policy number
-
                     if (policy != null && policy.Id == 0)
                     {
                         string policyNumber = string.Empty;
@@ -471,7 +468,7 @@ namespace GensureAPIv2.Controllers
                             {
                                 policyNumber += "0";
                             }
-                            policyNumber += pNumber;
+                            policyNumber += Convert.ToString(serviceDetail.GetUniquePolicy());
                             policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
 
                         }
