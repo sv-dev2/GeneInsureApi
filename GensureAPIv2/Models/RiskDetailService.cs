@@ -14,7 +14,6 @@ namespace GensureAPIv2.Models
             try
             {
                 model= GetCoverStartDateEndDate(model);
-
                 if(model.RenewalDate.Year==1) // handling the exception
                 {
                     model.CoverStartDate = DateTime.Now;

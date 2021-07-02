@@ -252,10 +252,8 @@ namespace GensureAPIv2.Controllers
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             json.Data = LoyaltyDiscount;
 
+
             riskDetailModel.Discount = LoyaltyDiscount;
-
-
-
             return riskDetailModel;
         }
 
@@ -455,7 +453,6 @@ namespace GensureAPIv2.Controllers
                     if (policy != null && policy.Id == 0)
                     {
                         string policyNumber = string.Empty;
-
                         var objList = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
                         if (objList != null)
                         {
@@ -707,11 +704,9 @@ namespace GensureAPIv2.Controllers
                                         listReinsuranceTransaction.Add(reinsurance);
                                     }
 
-
                                     Insurance.Service.VehicleService obj = new Insurance.Service.VehicleService();
                                     VehicleModel vehiclemodel = InsuranceContext.VehicleModels.Single(where: $"ModelCode='{item.ModelId}'");
                                     VehicleMake vehiclemake = InsuranceContext.VehicleMakes.Single(where: $" MakeCode='{item.MakeId}'");
-
                                     string vehicledescription = vehiclemodel.ModelDescription + " / " + vehiclemake.MakeDescription;
 
                                     // SummeryofVehicleInsured += "<tr><td>" + vehicledescription + "</td><td>" + Convert.ToString(item.SumInsured) + "</td><td>" + Convert.ToString(item.Premium) + "</td><td>" + AutoFacSumInsured.ToString() + "</td><td>" + AutoFacPremium.ToString() + "</td><td>" + FacSumInsured.ToString() + "</td><td>" + FacPremium.ToString() + "</td></tr>";
