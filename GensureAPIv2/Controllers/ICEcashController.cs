@@ -422,29 +422,29 @@ namespace GensureAPIv2.Controllers
                     model.PolicyDetail.BusinessSourceId = InsuranceContext.BusinessSources.All().FirstOrDefault().Id;
                     model.PolicyDetail.InsurerId = InsService.GetInsurers().FirstOrDefault().Id;
                     model.PolicyDetail.BusinessSourceId = 3;
-                   
 
 
-                    //var objList1 = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
-                    //if (objList1 != null)
-                    //{
-                    //    string number = objList1.PolicyNumber.Split('-')[0].Substring(4, objList1.PolicyNumber.Length - 6);
-                    //    long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
-                    //    string policyNumber = string.Empty;
-                    //    int length = 7;
-                    //    length = length - pNumber.ToString().Length;
-                    //    for (int i = 0; i < length; i++)
-                    //    {
-                    //        policyNumber += "0";
-                    //    }
-                    //    policyNumber += Convert.ToString(service.GetUniquePolicy()); 
-                    //    model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
 
-                    //}
-                    //else
-                    //{
-                    //    model.PolicyDetail.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"] + "-1";
-                    //}
+                    var objList1 = InsuranceContext.PolicyDetails.All(orderBy: "Id desc").FirstOrDefault();
+                    if (objList1 != null)
+                    {
+                        string number = objList1.PolicyNumber.Split('-')[0].Substring(4, objList1.PolicyNumber.Length - 6);
+                        long pNumber = Convert.ToInt64(number.Substring(2, number.Length - 2)) + 1;
+                        string policyNumber = string.Empty;
+                        int length = 7;
+                        length = length - pNumber.ToString().Length;
+                        for (int i = 0; i < length; i++)
+                        {
+                            policyNumber += "0";
+                        }
+                        policyNumber += Convert.ToString(serviceDetail.GetUniquePolicy());
+                        model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
+
+                    }
+                    else
+                    {
+                        model.PolicyDetail.PolicyNumber = ConfigurationManager.AppSettings["PolicyNumber"] + "-1";
+                    }
                     //----------------------------------------------------------------------* End*
 
 
