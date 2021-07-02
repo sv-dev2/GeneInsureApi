@@ -7,6 +7,7 @@ namespace GensureAPIv2.Models
 {
     public class ALMRePrintModel
     {
+
         public int Id { get; set; }
         public string VRN { get; set; }
         public int OTP { get; set; }
