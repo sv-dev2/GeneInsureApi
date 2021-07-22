@@ -82,16 +82,13 @@ namespace GensureAPIv2.Models
                 string message = string.Format("Error Time: {0}", DateTime.Now);
                 message += error;
                 message += "-----------------------------------------------------------";
-
                 message += Environment.NewLine;
-
                 string path = System.Web.HttpContext.Current.Server.MapPath("~/LogFile.txt");
                 using (StreamWriter writer = new StreamWriter(path, true))
                 {
                     writer.WriteLine(message);
                     writer.Close();
                 }
-
             }
             catch (Exception ex)
             {

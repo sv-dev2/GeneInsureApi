@@ -408,6 +408,7 @@ namespace GensureAPIv2.Controllers
                                 LicenseAddress.ModifiedBy = model.CustomerModel.Id;
                                 LicenseAddress.ModifiedOn = DateTime.Now;
                                 LicenseAddress.ReceiptDate = DateTime.Now;
+                                LicenseAddress.ExpectedDateDelivery = DateTime.Now;
                                 InsuranceContext.LicenceDiskDeliveryAddresses.Insert(LicenseAddress);
 
 

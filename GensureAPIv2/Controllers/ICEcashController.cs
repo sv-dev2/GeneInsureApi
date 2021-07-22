@@ -439,7 +439,6 @@ namespace GensureAPIv2.Controllers
                         }
                         policyNumber += Convert.ToString(serviceDetail.GetUniquePolicy());
                         model.PolicyDetail.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
-
                     }
                     else
                     {
@@ -562,6 +561,7 @@ namespace GensureAPIv2.Controllers
                                 LicenseAddress.ModifiedBy = customer.Id;
                                 LicenseAddress.ModifiedOn = DateTime.Now;
                                 LicenseAddress.ReceiptDate = DateTime.Now;
+                                LicenseAddress.ExpectedDateDelivery = DateTime.Now;
 
                                 InsuranceContext.LicenceDiskDeliveryAddresses.Insert(LicenseAddress);
 

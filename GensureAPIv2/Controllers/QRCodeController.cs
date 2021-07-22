@@ -400,10 +400,7 @@ namespace GensureAPIv2.Controllers
                     {
                         lenthPolicy = 2;
                     }
-
                 }
-
-
 
                 // InsuranceContext.CertSerialNoDetails
 
@@ -461,11 +458,9 @@ namespace GensureAPIv2.Controllers
                 if (detail == null)
                 {
                     var vehicleDetail = InsuranceContext.VehicleDetails.Single(where: $"RenewPolicyNumber = '{policyNumber}'");
-
                     if (vehicleDetail != null)
                     {
                         renewPolicyNumber = policyNumber;
-
                     }
                 }
 
@@ -740,11 +735,16 @@ namespace GensureAPIv2.Controllers
                 return reciept;
             }
 
+            if ( model.Amountdue == 0)
+            {
+                reciept.Message = "Amount due is not valid.";
+                return reciept;
+            }
+
 
             try
             {
-               
-                
+                          
                 logService.WriteLog("start receipt : " + model.Policyno);
 
                 var paymentmethod = model.Paymentmethod;
@@ -839,6 +839,15 @@ namespace GensureAPIv2.Controllers
 
 
                         #endregion Signature
+
+                       // var RenewVehicle = InsuranceContext.VehicleDetails.All(where: )
+
+                        var RenewVehicle = InsuranceContext.VehicleDetails.Single(where: $"PolicyId='{ policyDetails.Id }' and IsActive=1 ");
+
+                        if(RenewVehicle!=null)
+                            data.RenewPolicyNumber = RenewVehicle.RenewPolicyNumber;
+                        
+                       
 
                         data.Id = model.Receiptno;
                         data.InvoiceNumber = model.Policyno;
