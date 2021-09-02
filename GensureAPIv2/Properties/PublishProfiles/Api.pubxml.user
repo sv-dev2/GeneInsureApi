@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\GeneInsureWork\publishapi</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApplicationInsights.config">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/HelpPage.css">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Api.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ApiGroup.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/CollectionModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ComplexTypeModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/DictionaryModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/EnumTypeModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/HelpPageApiModel.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ImageSample.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/InvalidSample.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/KeyValuePairModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ModelDescriptionLink.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Parameters.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Samples.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/SimpleTypeModelDescription.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/TextSample.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Index.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/ResourceModel.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Shared/_Layout.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Web.config">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/_ViewStart.cshtml">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>02/22/2013 21:13:40</publishTime>
+    </File>
+    <File Include="bin/ApplicationInsights.config">
+      <publishTime>07/06/2020 15:38:32</publishTime>
+    </File>
+    <File Include="bin/AutoMapper.dll">
+      <publishTime>11/17/2018 09:14:56</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>03/02/2015 22:02:26</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>03/02/2015 22:02:26</publishTime>
+    </File>
+    <File Include="bin/GensureAPIv2.dll">
+      <publishTime>07/30/2021 11:07:00</publishTime>
+    </File>
+    <File Include="bin/Insurance.Domain.dll">
+      <publishTime>07/29/2021 11:42:13</publishTime>
+    </File>
+    <File Include="bin/itextsharp.dll">
+      <publishTime>01/22/2018 17:40:38</publishTime>
+    </File>
+    <File Include="bin/itextsharp.xmlworker.dll">
+      <publishTime>01/22/2018 17:43:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
+      <publishTime>12/07/2015 18:04:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.DependencyCollector.dll">
+      <publishTime>03/10/2016 13:26:18</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.PerfCounterCollector.dll">
+      <publishTime>03/10/2016 13:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.ServerTelemetryChannel.dll">
+      <publishTime>03/09/2016 11:00:14</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Web.dll">
+      <publishTime>03/10/2016 13:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.WindowsServer.dll">
+      <publishTime>03/10/2016 13:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ApplicationInsights.dll">
+      <publishTime>03/09/2016 10:57:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
+      <publishTime>04/04/2015 06:37:22</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.EntityFramework.dll">
+      <publishTime>04/04/2015 06:37:22</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.Identity.Owin.dll">
+      <publishTime>04/04/2015 06:37:22</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>06/15/2015 15:36:24</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Cors.dll">
+      <publishTime>01/13/2014 15:11:00</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>02/14/2015 01:46:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>02/14/2015 01:46:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Cookies.dll">
+      <publishTime>02/14/2015 01:46:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>02/14/2015 01:46:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Facebook.dll">
+      <publishTime>02/14/2015 01:46:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Google.dll">
+      <publishTime>02/14/2015 01:46:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.MicrosoftAccount.dll">
+      <publishTime>02/14/2015 01:46:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.OAuth.dll">
+      <publishTime>02/14/2015 01:46:40</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.Twitter.dll">
+      <publishTime>02/14/2015 01:46:42</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/24/2012 04:53:58</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>08/04/2014 10:03:56</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>11/28/2012 01:30:52</publishTime>
+    </File>
+    <File Include="bin/RestSharp.dll">
+      <publishTime>10/15/2018 17:58:54</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>06/19/2015 09:49:44</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>06/19/2015 09:49:46</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>01/28/2015 16:32:42</publishTime>
+    </File>
+    <File Include="bin/System.ValueTuple.dll">
+      <publishTime>05/15/2018 13:29:52</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>10/01/2013 20:54:22</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>01/28/2015 16:34:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>01/28/2015 16:32:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.Owin.dll">
+      <publishTime>08/26/2014 04:35:00</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>01/28/2015 16:33:46</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>01/28/2015 16:32:18</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>02/12/2014 03:56:04</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>01/28/2015 16:32:32</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>01/28/2015 16:34:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>01/28/2015 16:34:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>01/28/2015 16:34:30</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>09/11/2013 06:58:38</publishTime>
+    </File>
+    <File Include="CertificatePDF/Certificate20190715135650.pdf">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="CertificatePDF/Certificate20190715164322.pdf">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Content/Countries.txt">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/24hrs-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/about-banner.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/about-img1.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/about-img2.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/about-img3.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/add.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/amex.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/arrow-top.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/asc-desc.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/asc.gif">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/baaner 1600pX550p-01.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/banner.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/calender_icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/call-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/call-me-back.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/customer-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/delivery-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/desc.gif">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/diners.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/discover.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/eft_pay.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/geneinsure-logo.jpeg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/geneinsure-logo.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/geneinsure-logo1.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/Geneinsuresign.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/icon-1.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/icon-2.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/icon-3.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/icon-4.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/icon-5.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/jcb.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/loading.svg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/loyalty-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/maestro.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/master-card.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/mastercard.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/mastercard_images.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/Paynow-logo.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/road-assist-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/savers-moloko.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/Sort_both_small.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/top-header-bg.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/visa.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/visa_images.jpg">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="Images/whatsapp-icon.png">
+      <publishTime>07/06/2020 15:38:33</publishTime>
+    </File>
+    <File Include="LogFile.txt">
+      <publishTime>07/14/2021 19:13:47</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>07/06/2020 15:38:34</publishTime>
+    </File>
+    <File Include="Pdf/14809 Gene Insure Motor Policy Book.pdf">
+      <publishTime>07/06/2020 15:38:34</publishTime>
+    </File>
+    <File Include="Scripts/ai.0.22.9-build00167.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/ai.0.22.9-build00167.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.map">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.6.2.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/respond.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/respond.min.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Scripts/_references.js">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="test.html">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/LoyaltyPoints.cshtml">
+      <publishTime>12/09/2020 14:09:10</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/Reciept.cshtml">
+      <publishTime>12/09/2020 14:08:56</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/Reinsurance_Admin.cshtml">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/SeheduleMotor.cshtml">
+      <publishTime>12/09/2020 13:34:38</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/UserPaymentReceipt.cshtml">
+      <publishTime>12/09/2020 14:09:37</publishTime>
+    </File>
+    <File Include="Views/Shared/EmaiTemplates/UserRegisteration.cshtml">
+      <publishTime>12/09/2020 14:09:56</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>07/06/2020 15:38:35</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>07/14/2021 19:16:29</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

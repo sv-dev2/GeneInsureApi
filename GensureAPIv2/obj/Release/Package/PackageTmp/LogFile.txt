@@ -70,3 +70,31 @@ Error Time: 4/26/2019 1:27:00 PMCould not find a part of the path 'F:\ANKIT DHIM
 
 Error Time: 5/17/2019 7:02:04 PMThe operation has timed out.-----------------------------------------------------------
 
+Error Time: 7/7/2021 3:43:39 PMstart receipt : GMCC210030454-1-----------------------------------------------------------
+
+Error Time: 7/7/2021 3:47:01 PMSave reciept by mobile : In Db: Sql: INSERT INTO [ReceiptModuleHistory] ([PolicyId], [PolicyNumber], [CustomerName], [InvoiceNumber], [PaymentMethodId], [AmountDue], [AmountPaid], [Balance], [DatePosted], [TransactionReference], [SummaryDetailId], [CreatedBy], [IsMobile], [CreatedOn], [SignaturePath], [RenewPolicyNumber], [TenderedAmount], [IsActive], [ModifiedOn], [ModifiedBy]) VALUES (@PolicyId, @PolicyNumber, @CustomerName, @InvoiceNumber, @PaymentMethodId, @AmountDue, @AmountPaid, @Balance, @DatePosted, @TransactionReference, @SummaryDetailId, @CreatedBy, @IsMobile, @CreatedOn, @SignaturePath, @RenewPolicyNumber, @TenderedAmount, @IsActive, @ModifiedOn, @ModifiedBy)  Parms: @Id,0,@PolicyId,35806,@PolicyNumber,GMCC210030454-1,@CustomerName,null,@InvoiceNumber,GMCC210030454-1,@PaymentMethodId,1,@AmountDue,2611.01,@AmountPaid,0,@Balance,11.01,@DatePosted,1/1/0001 12:00:00 AM,@TransactionReference,null,@SummaryDetailId,34802,@CreatedBy,1,@IsMobile,True,@CreatedOn,7/7/2021 3:46:50 PM,@SignaturePath,null,@RenewPolicyNumber,null,@TenderedAmount,0,@IsActive,True,@ModifiedOn,7/7/2021 3:46:50 PM,@ModifiedBy,1-----------------------------------------------------------
+
+Error Time: 7/7/2021 5:45:38 PMstart receipt : GMCC180000614-1-----------------------------------------------------------
+
+Error Time: 7/7/2021 5:47:29 PMSave reciept by mobile : In Db: Sql: INSERT INTO [ReceiptModuleHistory] ([PolicyId], [PolicyNumber], [CustomerName], [InvoiceNumber], [PaymentMethodId], [AmountDue], [AmountPaid], [Balance], [DatePosted], [TransactionReference], [SummaryDetailId], [CreatedBy], [IsMobile], [CreatedOn], [SignaturePath], [RenewPolicyNumber], [TenderedAmount], [IsActive], [ModifiedOn], [ModifiedBy]) VALUES (@PolicyId, @PolicyNumber, @CustomerName, @InvoiceNumber, @PaymentMethodId, @AmountDue, @AmountPaid, @Balance, @DatePosted, @TransactionReference, @SummaryDetailId, @CreatedBy, @IsMobile, @CreatedOn, @SignaturePath, @RenewPolicyNumber, @TenderedAmount, @IsActive, @ModifiedOn, @ModifiedBy)  Parms: @Id,12567,@PolicyId,5925,@PolicyNumber,GMCC180000614-1,@CustomerName,null,@InvoiceNumber,GMCC180000614-1,@PaymentMethodId,1,@AmountDue,66.59,@AmountPaid,0,@Balance,66.59,@DatePosted,1/1/0001 12:00:00 AM,@TransactionReference,null,@SummaryDetailId,4969,@CreatedBy,1,@IsMobile,True,@CreatedOn,7/7/2021 5:46:50 PM,@SignaturePath,null,@RenewPolicyNumber,GMCC180000614-1,@TenderedAmount,0,@IsActive,True,@ModifiedOn,7/7/2021 5:46:50 PM,@ModifiedBy,1-----------------------------------------------------------
+
+Error Time: 7/7/2021 5:48:36 PMstart receipt : GMCC180000614-1-----------------------------------------------------------
+
+Error Time: 7/7/2021 5:53:04 PMThe SMTP server requires a secure connection or the client was not authenticated. The server response was: 5.7.0 Authentication Required. Learn more at-----------------------------------------------------------
+
+Error Time: 7/7/2021 6:09:08 PMstart receipt : GMCC180000662-1-----------------------------------------------------------
+
+Error Time: 7/7/2021 6:12:02 PMThe SMTP server requires a secure connection or the client was not authenticated. The server response was: 5.7.0 Authentication Required. Learn more at-----------------------------------------------------------
+
+Error Time: 7/7/2021 6:45:15 PMstart receipt : GMCC210030454-1-----------------------------------------------------------
+
+Error Time: 7/7/2021 6:47:51 PMThe SMTP server requires a secure connection or the client was not authenticated. The server response was: 5.7.0 Authentication Required. Learn more at-----------------------------------------------------------
+
+Error Time: 7/8/2021 1:18:25 PMstart receipt : GMCC210030454-2-----------------------------------------------------------
+
+Error Time: 7/8/2021 1:20:07 PMFailure sending mail.-----------------------------------------------------------
+
+Error Time: 7/14/2021 7:12:31 PMstart receipt : GMCC210030454-1-----------------------------------------------------------
+
+Error Time: 7/14/2021 7:13:47 PMThe SMTP server requires a secure connection or the client was not authenticated. The server response was: 5.7.0 Authentication Required. Learn more at-----------------------------------------------------------
+

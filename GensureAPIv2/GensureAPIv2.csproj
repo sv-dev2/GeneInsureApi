@@ -49,7 +49,8 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Insurance.Domain">
+    <Reference Include="Insurance.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>F:\GeneInsureWork\GeneInsureLatest\InsuranceClaim\bin\Insurance.Domain.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
@@ -283,6 +284,7 @@
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountPolicyModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ALMRePrintModel.cs" />
     <Compile Include="Models\ClaimNotificationModel.cs" />
     <Compile Include="Models\ClsVehicleModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
