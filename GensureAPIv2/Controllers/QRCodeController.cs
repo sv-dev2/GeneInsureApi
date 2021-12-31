@@ -906,6 +906,7 @@ namespace GensureAPIv2.Controllers
                             .Replace("#TransactionReference#", ReceiptHistory.TransactionReference).Replace("#TransactionReference#", ReceiptHistory.TransactionReference)
                             .Replace("#PaymentType#", (ReceiptHistory.PaymentMethodId == 1 ? "Cash" : (ReceiptHistory.PaymentMethodId == 2 ? "PayPal" : "PayNow")));
 
+                            string subject = "GeneInsure Receipt "+ ReceiptHistory.Id;
 
                             var user = UserManager.FindById(customer.UserID);
                             if (customer.IsCustomEmail == false)
