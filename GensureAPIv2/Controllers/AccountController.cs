@@ -526,14 +526,14 @@ namespace GensureAPIv2.Controllers
             {
                 uniqueId = Convert.ToInt32(dbCustomer.UniqueCustomerId);
                 uniqueId = uniqueId + 1;
-                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+                customerUserId = "Guest-" + uniqueId + "@geneinsure.co.zw";
                 var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
                 InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
             }
             else
             {
                 uniqueId = 1000;
-                customerUserId = "Guest-" + uniqueId + "@gmail.com";
+                customerUserId = "Guest-" + uniqueId + "@geneinsure.co.zw";
                 var uniquCustomer = new UniqueCustomer { UniqueCustomerId = uniqueId, CreatedOn = DateTime.Now };
                 InsuranceContext.UniqueCustomers.Insert(uniquCustomer);
             }

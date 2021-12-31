@@ -911,11 +911,11 @@ namespace GensureAPIv2.Controllers
                             var user = UserManager.FindById(customer.UserID);
                             if (customer.IsCustomEmail == false)
                             {
-                                EmailService.SendEmail(user.Email, "", "", "Receipt", Body2, attachements);
+                                EmailService.SendEmail(user.Email, "", "", subject, Body2, attachements);
                             }
                             else
                             {
-                                EmailService.SendEmail("service@gene.co.zw", "", "", "Receipt", Body2, attachements);
+                                EmailService.SendEmail("service@gene.co.zw", "", "", subject, Body2, attachements);
                             }
                         }
 

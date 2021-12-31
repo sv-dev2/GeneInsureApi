@@ -269,9 +269,7 @@ namespace GensureAPIv2.Controllers
             SummaryDetailModel summaryModel = new SummaryDetailModel();
 
             EmailService logService = new EmailService();
-
             logService.WriteLog("SubmitPlan start: " + model.RiskDetailModel[0].RegistrationNo + " email:" + model.CustomerModel.EmailAddress);
-
 
             string btnSendQuatation = "";
 
@@ -296,7 +294,6 @@ namespace GensureAPIv2.Controllers
                         if (customer != null)
                         {
                             customer.UserID = user.Id;
-
 
                             if (model.CustomerModel != null)
                             {
@@ -348,8 +345,16 @@ namespace GensureAPIv2.Controllers
                     else
                     {
 
+                        // randomPwd
+
+                        RandomPwd rnd = new RandomPwd();
+                        var randomPwd = rnd.RandomPassword();
+
                         var userDetails = new ApplicationUser { UserName = model.CustomerModel.EmailAddress, Email = model.CustomerModel.EmailAddress, PhoneNumber = model.CustomerModel.PhoneNumber };
                         var result = UserManager.Create(userDetails, "Geninsure@123");
+
+
+
                         if (result.Succeeded)
                         {
                             var roleresult = UserManager.AddToRole(userDetails.Id, "Customer"); // for user
@@ -364,18 +369,6 @@ namespace GensureAPIv2.Controllers
                             customer.LastName = model.CustomerModel.LastName;
                             //string[] fullName = model.CustomerModel.FirstName.Split(' ');
 
-                            //if (fullName.Length > 0)
-                            //{
-                            //    customer.FirstName = fullName[0];
-                            //    if (fullName.Length > 1)
-                            //    {
-                            //        customer.LastName = fullName[1];
-                            //    }
-                            //    else
-                            //    {
-                            //        customer.LastName = fullName[0];
-                            //    }
-                            //}
                         }
 
                         customer.AddressLine1 = model.CustomerModel.AddressLine1;
