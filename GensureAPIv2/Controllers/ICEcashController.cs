@@ -347,8 +347,8 @@ namespace GensureAPIv2.Controllers
 
                         // randomPwd
 
-                        RandomPwd rnd = new RandomPwd();
-                        var randomPwd = rnd.RandomPassword();
+                        //RandomPwd rnd = new RandomPwd();
+                        //var randomPwd = rnd.RandomPassword();
 
                         var userDetails = new ApplicationUser { UserName = model.CustomerModel.EmailAddress, Email = model.CustomerModel.EmailAddress, PhoneNumber = model.CustomerModel.PhoneNumber };
                         var result = UserManager.Create(userDetails, "Geninsure@123");
@@ -1359,7 +1359,7 @@ namespace GensureAPIv2.Controllers
                 {
                     string format = "yyyyMMdd";
                     DateTime LicExpiryDate = DateTime.ParseExact(model.LicenseExpiryDate, format, CultureInfo.InvariantCulture);
-                    vehileDetails.LicExpiryDate = LicExpiryDate.ToShortDateString();
+                    vehileDetails.LicExpiryDate = LicExpiryDate;
                     InsuranceContext.VehicleDetails.Update(vehileDetails);
                 }
                 catch (Exception ex)

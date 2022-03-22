@@ -49,15 +49,20 @@ namespace GensureAPIv2.Models
             }
         }
 
+
         public RiskDetailModel GetCoverStartDateEndDate(RiskDetailModel model)
         {
 
-            model.CoverStartDate = DateTime.Now;
+            if(model.CoverStartDate==null)
+            {
+                model.CoverStartDate = DateTime.Now;
 
-            if (model.PaymentTermId == 1)
-                model.CoverEndDate = DateTime.Now.AddMonths(12);
-            else
-                model.CoverEndDate = DateTime.Now.AddMonths(model.PaymentTermId);
+                if (model.PaymentTermId == 1)
+                    model.CoverEndDate = DateTime.Now.AddMonths(12);
+                else
+                    model.CoverEndDate = DateTime.Now.AddMonths(model.PaymentTermId);
+            }
+           
 
             model.RenewalDate = model.CoverEndDate.Value.AddDays(1);
 
@@ -67,6 +72,25 @@ namespace GensureAPIv2.Models
             return model;
 
         }
+
+
+        //public RiskDetailModel GetCoverStartDateEndDate(RiskDetailModel model)
+        //{
+
+        //    model.CoverStartDate = DateTime.Now;
+
+        //    if (model.PaymentTermId == 1)
+        //        model.CoverEndDate = DateTime.Now.AddMonths(12);
+        //    else
+        //        model.CoverEndDate = DateTime.Now.AddMonths(model.PaymentTermId);
+
+        //    model.RenewalDate = model.CoverEndDate.Value.AddDays(1);
+
+        //    model.TransactionDate = DateTime.Now;
+        //    model.PolicyExpireDate = model.CoverEndDate.ToString();
+
+        //    return model;
+        //}
 
 
     }
