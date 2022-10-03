@@ -60,18 +60,7 @@ namespace GensureAPIv2.Controllers
             }
         }
 
-        //public override void OnActionExecuted(HttpActionExecutedContext filterContext)
-        //{
-        //    string Username = string.Empty;
-        //    string Password = string.Empty;
-        //    if (Request.Headers.Contains("username") && Request.Headers.Contains("password"))
-        //    {
-
-        //        Username = Request.Headers.GetValues("username").First();
-        //        Password = Request.Headers.GetValues("password").First();
-        //    }
-        //}
-
+       
 
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
@@ -435,13 +424,7 @@ namespace GensureAPIv2.Controllers
                 Location_Id = x.Location_Id,
             }).ToList();
 
-            //var branchList = new List<BranchModel>();
-
-            //foreach (var item in list)
-            //{
-            //    branchList.Add(new BranchModel { Id = item.Id, BranchName = item.BranchName });
-            //}
-
+           
             EmailService logService = new EmailService();
 
 
@@ -887,18 +870,6 @@ namespace GensureAPIv2.Controllers
 
                     model.AmountPaid = item.Premium + item.ZTSCLevy + item.StampDuty + item.VehicleLicenceFee + radioAmount;
 
-
-                    //var summaryVehicleDetails = InsuranceContext.SummaryVehicleDetails.Single(where: $"VehicleDetailsId='{item.Id}'");
-
-                    //if (summaryVehicleDetails != null)
-                    //{
-                    //    var summaryDetails = InsuranceContext.SummaryDetails.Single(where: $"Id='{summaryVehicleDetails.SummaryDetailId}'");
-
-                    //    if (summaryDetails != null)
-                    //    {
-                    //        model.AmountPaid = summaryDetails.TotalPremium;
-                    //    }
-                    //}
                     list.Add(model);
                 }
             }
@@ -1056,47 +1027,7 @@ namespace GensureAPIv2.Controllers
         }
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("GetMakeModels")]
-        //public IEnumerable<VehiclesModel> BindModelsWithMake([FromUri]string makeCode)
-        //{
-        //    List<GensureAPIv2.Models.VehiclesModel> listModel = new List<GensureAPIv2.Models.VehiclesModel>();
-        //    var Model = InsuranceContext.VehicleModels.All(where: $"MakeCode='{makeCode}'").ToList();
-
-        //    if (Model != null)
-        //    {
-        //        foreach (var item in Model)
-        //        {
-        //            GensureAPIv2.Models.VehiclesModel objModel = new GensureAPIv2.Models.VehiclesModel();
-        //            objModel.Id = item.Id;
-        //            objModel.ModelDescription = item.ModelDescription;
-        //            listModel.Add(objModel);
-        //        }
-        //    }
-        //    return listModel;
-        //}
-
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("Models")]
-        //public IEnumerable<VehiclesModel> GetAllModels([FromUri]string makeCode)
-        //{
-        //    List<GensureAPIv2.Models.VehiclesModel> listModel = new List<GensureAPIv2.Models.VehiclesModel>();
-        //    var Model = InsuranceContext.VehicleModels.All(where: $"MakeCode='{makeCode}'").ToList();
-
-        //    if (Model != null)
-        //    {
-        //        foreach (var item in Model)
-        //        {
-        //            GensureAPIv2.Models.VehiclesModel objModel = new GensureAPIv2.Models.VehiclesModel();
-        //            objModel.Id = item.Id;
-        //            objModel.ModelDescription = item.ModelDescription;
-        //            listModel.Add(objModel);
-        //        }
-        //    }
-        //    return listModel;
-        //}
+      
 
 
         [AllowAnonymous]

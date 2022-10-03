@@ -33,7 +33,7 @@ namespace GensureAPIv2.Controllers
         string AdminEmail = WebConfigurationManager.AppSettings["AdminEmail"];
         string ZimnatEmail = WebConfigurationManager.AppSettings["ZimnatEmail"];
         smsService objsmsService = new smsService();
-
+        RiskDetailModel riskdata = new RiskDetailModel();
         //int _payLater = 7; //test
 
         //  int _payLater = 1008;
@@ -49,22 +49,7 @@ namespace GensureAPIv2.Controllers
             }
         }
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("Sources")]
-        //public JsonResult checkVehicleExistsWithVRN(string regNo)
-
-        //public string checkVehicleExistsWithVRN(string regNo)
-
-        //[System.Web.Http.AllowAnonymous]
-        //[System.Web.Http.HttpPost]
-        //[System.Web.Http.Route("checkVehicles")]
-        //public JsonResult checkVehiclesWithVRN()
-        //{         
-        //    JsonResult json = new JsonResult();
-        //    return json;
-        //}
-
+      
 
 
         [System.Web.Http.AllowAnonymous]
@@ -257,7 +242,97 @@ namespace GensureAPIv2.Controllers
             return riskDetailModel;
         }
 
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("GetPaymentcovertype")]
+        public RiskDetailModel GetPaymentcovertype([FromUri] string SearchText)
+        {
+            //List<GensureAPIv2.Models.CustomerModel> objmdl = new List<GensureAPIv2.Models.CustomerModel>();
+            RiskDetailModel objmdl = new RiskDetailModel();
+            if (SearchText != null && SearchText != "")
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(where: $"UniqueCode = '{SearchText}'");
 
+                if (vehicle != null)
+                {
+                    //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+                    var paymentTerm = InsuranceContext.PaymentTerms.Single(where: $"Id = '{vehicle.PaymentTermId}'");
+
+                    var CoverTypelist = InsuranceContext.CoverTypes.Single(where: $"Id='{vehicle.CoverTypeId}'");
+
+                    {
+                        objmdl.PaymentTermId = paymentTerm.Id;
+                        objmdl.CoverTypeId = CoverTypelist.Id;
+                        objmdl.CoverTypeName = CoverTypelist.Name;
+                        objmdl.Paymenttermname = paymentTerm.Name;
+                    }
+                }
+            }
+            return objmdl;
+        }
+
+
+
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("Getvehicletype")]
+        public Riskdetailsmodel1 Getvehicletype([FromUri] string SearchText)
+         {
+            //List<GensureAPIv2.Models.CustomerModel> objmdl = new List<GensureAPIv2.Models.CustomerModel>();
+            Riskdetailsmodel1 objmdl = new Riskdetailsmodel1();
+            if (SearchText != null && SearchText != "")
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(where: $"UniqueCode = '{SearchText}'");
+
+                if (vehicle != null)
+                {
+                    //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+                    var vehicletype = InsuranceContext.Products.Single(where: $"Id = '{vehicle.ProductId}'");
+                    var taxclass = InsuranceContext.VehicleTaxClasses.Single(where: $"TaxClassId = '{vehicle.TaxClassId}'");
+                    var vehicleusage  = InsuranceContext.VehicleUsages.Single(where: $"Id = '{vehicle.VehicleUsage}'");
+
+
+                    if (vehicletype != null)
+                    {
+                        
+                        objmdl.Productname = vehicletype.ProductName;
+                        objmdl.Discription = taxclass.Description;
+                        objmdl.vehicleusage = vehicleusage.VehUsage;
+                       
+                    }
+                }
+            }
+            return objmdl;
+        }
+
+        [System.Web.Http.AllowAnonymous]
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("Getmakemodel")]
+         public makemodelmodels1 Getmakemodel([FromUri] string SearchText)
+        {
+            //List<GensureAPIv2.Models.CustomerModel> objmdl = new List<GensureAPIv2.Models.CustomerModel>();
+            makemodelmodels1 objmdl = new makemodelmodels1();
+            if (SearchText != null && SearchText != "")
+            {
+                var vehicle = InsuranceContext.VehicleDetails.Single(where: $"UniqueCode = '{SearchText}'");
+
+                if (vehicle != null)
+                {
+                    //var ePaymentTermData = from ePaymentTerm e in Enum.GetValues(typeof(ePaymentTerm)) select new { ID = (int)e, Name = e.ToString() };
+                    var vehiclemodel = InsuranceContext.VehicleModels.Single(where: $"ModelCode = '{vehicle.ModelId}'");
+                    var vehiclemake = InsuranceContext.VehicleMakes.Single(where: $"MakeCode = '{vehicle.MakeId}'");
+                   
+                    {
+                        objmdl.Model = vehiclemodel.ModelDescription;
+                        objmdl.Make = vehiclemake.MakeDescription;
+                      
+                    }
+                }
+            }
+            return objmdl;
+        }
+        
         [System.Web.Http.AllowAnonymous]
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("SaveVehicalDetails")]
@@ -267,10 +342,8 @@ namespace GensureAPIv2.Controllers
             //List<VehicalModel> objVehical = new List<VehicalModel>();
 
             SummaryDetailModel summaryModel = new SummaryDetailModel();
-
             EmailService logService = new EmailService();
             logService.WriteLog("SubmitPlan start: " + model.RiskDetailModel[0].RegistrationNo + " email:" + model.CustomerModel.EmailAddress);
-
             string btnSendQuatation = "";
 
             try
@@ -286,7 +359,7 @@ namespace GensureAPIv2.Controllers
                     var user = UserManager.FindByEmail(model.CustomerModel.EmailAddress);
 
                     // if exist - get customer id from xcustomer table and set customer.Id in Customer object
-                    if (user != null && user.Id != null)
+                     if (user != null && user.Id != null)
                     {
 
                         customer = InsuranceContext.Customers.Single(where: $"UserID = '" + user.Id + "'");
@@ -308,7 +381,7 @@ namespace GensureAPIv2.Controllers
                                 //    {
                                 //        customer.LastName = fullName[1];
                                 //    }
-                                //    else
+                                 //    else
                                 //    {
                                 //        customer.LastName = fullName[0]; // for error handling
                                 //    }
@@ -320,7 +393,7 @@ namespace GensureAPIv2.Controllers
                             customer.City = model.CustomerModel.City;
                             customer.NationalIdentificationNumber = model.CustomerModel.NationalIdentificationNumber;
                             customer.Zipcode = model.CustomerModel.Zipcode;
-                            customer.DateOfBirth = model.CustomerModel.DateOfBirth;
+                             customer.DateOfBirth = model.CustomerModel.DateOfBirth;
                             customer.Gender = model.CustomerModel.Gender;
                             customer.Countrycode = model.CustomerModel.CountryCode;
                             customer.PhoneNumber = model.CustomerModel.PhoneNumber;
@@ -340,7 +413,7 @@ namespace GensureAPIv2.Controllers
                                 customer.ALMId = GetALMId();
 
                             InsuranceContext.Customers.Update(customer);
-                        }
+                         }
                     }
                     else
                     {
@@ -352,7 +425,7 @@ namespace GensureAPIv2.Controllers
 
                         var userDetails = new ApplicationUser { UserName = model.CustomerModel.EmailAddress, Email = model.CustomerModel.EmailAddress, PhoneNumber = model.CustomerModel.PhoneNumber };
                         var result = UserManager.Create(userDetails, "Geninsure@123");
-
+                         
 
 
                         if (result.Succeeded)
@@ -370,7 +443,7 @@ namespace GensureAPIv2.Controllers
                             //string[] fullName = model.CustomerModel.FirstName.Split(' ');
 
                         }
-
+                        
                         customer.AddressLine1 = model.CustomerModel.AddressLine1;
                         customer.AddressLine2 = model.CustomerModel.AddressLine2;
                         customer.City = model.CustomerModel.City;
@@ -456,7 +529,7 @@ namespace GensureAPIv2.Controllers
                             for (int i = 0; i < length; i++)
                             {
                                 policyNumber += "0";
-                            }
+                             }
                             policyNumber += Convert.ToString(serviceDetail.GetUniquePolicy());
                             policy.PolicyNumber = "GMCC" + DateTime.Now.Year.ToString().Substring(2, 2) + policyNumber + "-1";
 
@@ -488,34 +561,41 @@ namespace GensureAPIv2.Controllers
                     var Id = 0;
                     var listReinsuranceTransaction = new List<ReinsuranceTransaction>();
                     //var vehicle = (List<RiskDetailModel>)Session["VehicleDetails"];
+
                     var vehicle = model.RiskDetailModel;
 
+                    
 
                     if (vehicle != null && vehicle.Count > 0)
                     {
                         foreach (var item in vehicle.ToList())
-                        {
+                         {
                             if (item.PaymentTermId == 12) // for handling exception
                                 item.PaymentTermId = 1;
-
+                             
                             item.IsMobile = true;
-
                             // to handle the exception if make and model is not comming correct
-
                             var vehicleMake = InsuranceContext.VehicleMakes.Single(where: $"MakeDescription= '{item.MakeId}'");
                             if (vehicleMake != null)
                             {
                                 item.MakeId = vehicleMake.MakeCode;
                                 var vehicleModel = InsuranceContext.VehicleModels.Single(where: $"ModelDescription= '{item.ModelId}' and MakeCode ='{item.MakeId}' ");
                                 if (vehicleModel != null)
-                                    item.ModelId = vehicleModel.ModelCode;
+                                     item.ModelId = vehicleModel.ModelCode;
                             }
 
 
                             var _item = item;
+                            var vehicelDetailchecked = InsuranceContext.VehicleDetails.Single(where: $" Uniquecode= '{_item.UniqueCode}'");
+                            var regnumber = vehicelDetailchecked.RegistrationNo;
+                            if (regnumber != null)
+                            {
+                                _item.RegistrationNo = regnumber;
+                            }
+                            var vehicelDetailswithuniquecode = InsuranceContext.VehicleDetails.Single(where: $"policyid= '{policy.Id}' and Uniquecode= '{_item.UniqueCode}'");
                             var vehicelDetails = InsuranceContext.VehicleDetails.Single(where: $"policyid= '{policy.Id}' and RegistrationNo= '{_item.RegistrationNo}'");
 
-                            if (vehicelDetails != null)
+                            if (vehicelDetails != null || vehicelDetailswithuniquecode != null)
                             {
                                 item.Id = vehicelDetails.Id;
                                 summaryModel.VehicleId = vehicelDetails.Id;
@@ -528,11 +608,8 @@ namespace GensureAPIv2.Controllers
                                 _item.CustomerId = customer.Id;
                                 _item.PolicyId = policy.Id;
                                 _item.ALMBranchId = customer.BranchId;
-
                                 _item.Id = service.AddVehicleInformation(_item);
-
                                 summaryModel.VehicleId = _item.Id;
-
                                 //objVehical.Add(new VehicalModel
                                 //{
                                 //    VehicalId = _item.Id,
@@ -540,9 +617,8 @@ namespace GensureAPIv2.Controllers
                                 //});
 
                                 var vehicles = model.RiskDetailModel;
-                                var vehicalIndex = vehicles.FindIndex(c => c.RegistrationNo == item.RegistrationNo);
+                                var vehicalIndex = vehicles.FindIndex(c => c.RegistrationNo == item.RegistrationNo||c.UniqueCode ==item.UniqueCode);
                                 vehicles[vehicalIndex] = _item;
-
                                 // Delivery Address Save
                                 var LicenseAddress = new LicenceDiskDeliveryAddress();
                                 LicenseAddress.Address1 = _item.LicenseAddress1;
@@ -818,8 +894,6 @@ namespace GensureAPIv2.Controllers
                             DbEntry.CustomerId = customer.Id;
                             bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
                             DbEntry.CreatedBy = customer.Id;
-
-
                             DbEntry.CreatedOn = DateTime.Now;
                             if (DbEntry.BalancePaidDate.Value.Year == 0001)
                             {
@@ -1240,82 +1314,7 @@ namespace GensureAPIv2.Controllers
 
                     #endregion
 
-                    //    #region Send Quotation SMS
-                    //    Insurance.Service.smsService objsmsService = new Insurance.Service.smsService();
-
-                    //    // done
-                    //    string Recieptbody = "Hi " + customer.FirstName + "\nPlease pay" + "$" + Convert.ToString(summaryDetail.AmountPaid) + " to merchant code 249341 activate your policy with GeneInsure. Shortcode *151*2*2*249341*<amount>#." + "\n" + "\nThank you.";
-                    //    var Recieptresult = await objsmsService.SendSMS(customer.CountryCode.Replace("+", "") + user.PhoneNumber, Recieptbody);
-
-                    //    SmsLog objRecieptsmslog = new SmsLog()
-                    //    {
-                    //        Sendto = user.PhoneNumber,
-                    //        Body = Recieptbody,
-                    //        Response = Recieptresult,
-                    //        CreatedBy = customer.Id,
-                    //        CreatedOn = DateTime.Now
-                    //    };
-
-                    //    InsuranceContext.SmsLogs.Insert(objRecieptsmslog);
-                    //    #endregion
-
-
-
-
-                    //    //Session.Remove("CustomerDataModal");
-                    //    //Session.Remove("PolicyData");
-                    //    //Session.Remove("VehicleDetails");
-                    //    //Session.Remove("SummaryDetailed");
-                    //    //Session.Remove("CardDetail");
-                    //    //Session.Remove("issummaryformvisited");
-                    //    //Session.Remove("PaymentId");
-                    //    //Session.Remove("InvoiceId");
-
-
-                    //    TempData["SucessMsg"] = "Quotation has been sent email sucessfully.";
-
-
-                    //    bool _userLoggedin = (System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-
-                    //    if (_userLoggedin)
-                    //    {
-                    //        return RedirectToAction("QuotationList", "Account");
-                    //    }
-                    //    else
-                    //    {
-                    //        return Redirect("/CustomerRegistration/index");
-                    //    }
-
-                    //    // return RedirectToAction("SummaryDetail");
-                    //}
-                    // #endregion
-
-                    // return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
-
-                    //if (model.PaymentMethodId == 1)
-                    //{
-                    //    return RedirectToAction("SaveDetailList", "Paypal", new { id = DbEntry.Id, invoiceNumer = model.InvoiceNumber });
-                    //}
-
-                    //if (model.PaymentMethodId == 3)
-                    //{
-
-                    //    //return RedirectToAction("InitiatePaynowTransaction", "Paypal", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid), PolicyNumber = policy.PolicyNumber, Email = customer.EmailAddress });
-                    //    TempData["PaymentMethodId"] = model.PaymentMethodId;
-                    //    return RedirectToAction("makepayment", new { id = DbEntry.Id, TotalPremiumPaid = Convert.ToString(model.AmountPaid) });
-                    //}
-
-                    //else
-                    //{
-                    //    return RedirectToAction("PaymentDetail", new { id = DbEntry.Id });
-                    //}
-
-                    //}
-                    //else
-                    //{
-                    //   // return RedirectToAction("SummaryDetail");
-
-                    //}
+                   
                 }
                 else
                 {
@@ -1443,10 +1442,6 @@ namespace GensureAPIv2.Controllers
         {
 
             VehicleDetails vehicel = new VehicleDetails();
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 order by id desc "); // to do id will be remove
-
             var query = " select top 1*  from [dbo].[VehicleDetail] where RegistrationNo='" + vrn + "' order by id desc ";
             var dbVehicel = InsuranceContext.Query(query).Select(x => new VehicleDetails()
             {
@@ -1479,10 +1474,7 @@ namespace GensureAPIv2.Controllers
         {
 
             VehicleDetails vehicel = new VehicleDetails();
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 "); // to do id will be remove
-            //  var dbVehicel = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{vrn}' and IsActive=1 and id=16903 order by id desc "); // to do id will be remove
-
+          
             var query = " select *  from [dbo].[VehicleDetail] where PdfCode='" + pdfCode + "'";
             var dbVehicel = InsuranceContext.Query(query).Select(x => new VehicleDetails()
             {
@@ -1556,9 +1548,6 @@ namespace GensureAPIv2.Controllers
                     objEmailModel.IDNumber = customerDetails.NationalIdentificationNumber;
                 }
 
-                // objEmailModel.Gender = userDetials.
-
-
             }
             return objEmailModel;
         }
@@ -1607,9 +1596,6 @@ namespace GensureAPIv2.Controllers
                     objEmailModel.CompanyCity = customerDetails.CompanyCity;
 
                 }
-
-                // objEmailModel.Gender = userDetials.
-
 
             }
             return objEmailModel;
@@ -1680,15 +1666,7 @@ namespace GensureAPIv2.Controllers
                 objList.Add("~/Content/makepayment.html");
                 objList.Add(checkoutId);
                 return Ok<List<string>>(objList);
-                // return Created("~/Content/makepayment.html",checkoutId);
-                // return responseData;
-                //'<form action = "http://localhost:20023/home/returnurl" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>< script src = "https://test.oppwa.com/v1/paymentWidgets.js?checkoutId="' + objList[1].ToString() + '></script>'
-                //  return ('<form action = "http://localhost:20023/home/returnurl" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>< script src = "https://test.oppwa.com/v1/paymentWidgets.js?checkoutId=@ViewBag.checkoutId"></script>');
-
-
-
-
-                // return View();
+               
             }
             else
             {
@@ -1711,21 +1689,12 @@ namespace GensureAPIv2.Controllers
                 {
                     try
                     {
-                        //var _item = item;
-                        //var dbModel = Mapper.Map<VehicleLicenseModel, VehicleLicense>(_item);
-                        //dbModel.CreatedOn = DateTime.Now;
-                        //objmsg.Suceess = true;
-                        //InsuranceContext.VehicleLicenses.Insert(dbModel);
+                      
                     }
                     catch (Exception ex)
                     {
                     }
                 }
-
-                //var dbModel = Mapper.Map<List<VehicleLicenseModel>, VehicleLicense>(objVehicleLicense);
-                //dbModel.CreatedOn = DateTime.Now;
-                //objmsg.Suceess = true;
-                //InsuranceContext.VehicleLicenses.Insert(dbModel);
             }
             return objmsg;
         }
@@ -1839,6 +1808,7 @@ namespace GensureAPIv2.Controllers
 
                     var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
                     var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+                    var branch = InsuranceContext.Branches.Single(customer.BranchId);
 
                     var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
                     var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
@@ -1917,7 +1887,7 @@ namespace GensureAPIv2.Controllers
 
 
                         // add receipt payment module
-
+                        
                         ReceiptAndPayment payment = new ReceiptAndPayment();
                         payment.Amount = (summaryDetail.TotalPremium.Value);
                         payment.CreatedBy = 33689; // almmanager@gene.co.zw user id
@@ -1930,6 +1900,30 @@ namespace GensureAPIv2.Controllers
                         payment.reference = "--";
                         payment.paymentMethod = "--";
                         InsuranceContext.ReceiptAndPayments.Insert(payment);
+
+                        ReceiptModuleHistory receptdata = new ReceiptModuleHistory();
+                        receptdata.PolicyId= policy.Id;
+                        receptdata.PolicyNumber= policy.PolicyNumber.ToUpper();
+                        receptdata.CustomerName = customer.FirstName + ' ' + customer.LastName;
+                        receptdata.InvoiceNumber = policy.PolicyNumber;
+                        receptdata.PaymentMethodId = summaryDetail.PaymentMethodId;
+                        //receptdata.AmountDue = ' ';
+                        receptdata.AmountPaid = summaryDetail.AmountPaid;
+                        //receptdata.Balance = summaryDetail.AmountPaid;
+                        receptdata.DatePosted = DateTime.Now;
+                        //receptdata.TransactionReference = '';
+                        receptdata.SummaryDetailId = summaryDetail.Id;
+                        receptdata.CreatedBy = 30163;
+                        receptdata.IsMobile =true;
+                        receptdata.CreatedOn = DateTime.Now;
+                        //receptdata.SignaturePath =;
+                        //receptdata.RenewPolicyNumber =;
+                        //receptdata.TenderedAmount =;
+                        receptdata.IsActive =true;
+                        receptdata.ModifiedOn =DateTime.Now;
+                        receptdata.ModifiedBy = 30163;
+                        InsuranceContext.ReceiptHistorys.Insert(receptdata);
+
 
 
                         // save account policy details to trac calculation
@@ -2032,7 +2026,7 @@ namespace GensureAPIv2.Controllers
 
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/Reciept.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow"))).Replace("#cardnumber#", objPaymentInfo.CardNumber).Replace("#terminalid#", objPaymentInfo.TerminalId).Replace("#transatamout#", objPaymentInfo.TransactionAmount).Replace("#transtdate#", DateTime.Now.ToShortDateString());
+                    var Body2 = EmailBody2.Replace("#branchname#", branch.BranchName).Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : (summaryDetail.PaymentMethodId == 3 ? "PayNow" : (summaryDetail.PaymentMethodId == 4 ? "Swipe" : (summaryDetail.PaymentMethodId == 5 ? "Mobile" : (summaryDetail.PaymentMethodId == 6 ? "PayLater" : "EcoCash"))))))).Replace("#cardnumber#", objPaymentInfo.CardNumber).Replace("#terminalid#", objPaymentInfo.TerminalId).Replace("#transatamout#", objPaymentInfo.TransactionAmount).Replace("#transtdate#", DateTime.Now.ToShortDateString());
 
                     #region Payment Email
                     var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Invoice");
@@ -2672,13 +2666,5 @@ namespace GensureAPIv2.Controllers
             public long TransactionId { get; set; }
             public DateTime CreatedOn { get; set; }
         }
-
-
-
-
-
-
-
-
-    }
+  }
 }

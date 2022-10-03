@@ -1425,6 +1425,7 @@ namespace GensureAPIv2.Controllers
                     var vehicle = InsuranceContext.VehicleDetails.Single(objPaymentInfo.VehicleDetailId);
                     var policy = InsuranceContext.PolicyDetails.Single(vehicle.PolicyId);
                     var customer = InsuranceContext.Customers.Single(summaryDetail.CustomerId);
+                    var branch = InsuranceContext.Branches.Single(customer.BranchId);
 
                     var product = InsuranceContext.Products.Single(Convert.ToInt32(vehicle.ProductId));
                     var currency = InsuranceContext.Currencies.Single(policy.CurrencyId);
@@ -1596,7 +1597,8 @@ namespace GensureAPIv2.Controllers
                         currencyName = currencyDetails.Name;
                     string userRegisterationEmailPath = "/Views/Shared/EmaiTemplates/Reciept.cshtml";
                     string EmailBody2 = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(userRegisterationEmailPath));
-                    var Body2 = EmailBody2.Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.AmountPaid)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : "PayNow"))).Replace("#cardnumber#", objPaymentInfo.CardNumber).Replace("#terminalid#", objPaymentInfo.TerminalId).Replace("#transatamout#", objPaymentInfo.TransactionAmount).Replace("#transtdate#", DateTime.Now.ToShortDateString());
+                    var Body2 = EmailBody2.Replace("##branchname##", branch.BranchName).Replace("#DATE#", DateTime.Now.ToShortDateString()).Replace("##path##", filepath).Replace("#FirstName#", customer.FirstName).Replace("#LastName#", customer.LastName).Replace("#AccountName#", customer.FirstName + ", " + customer.LastName).Replace("#Address1#", customer.AddressLine1).Replace("#Address2#", customer.AddressLine2).Replace("#Amount#", Convert.ToString(summaryDetail.TotalPremium)).Replace("#PaymentDetails#", "New Premium").Replace("#ReceiptNumber#", policy.PolicyNumber).Replace("#PaymentType#", (summaryDetail.PaymentMethodId == 1 ? "Cash" : (summaryDetail.PaymentMethodId == 2 ? "PayPal" : (summaryDetail.PaymentMethodId == 3 ? "PayNow" : (summaryDetail.PaymentMethodId == 4 ? "Swipe" : (summaryDetail.PaymentMethodId == 5 ? "Mobile" : (summaryDetail.PaymentMethodId == 6 ? "PayLater" : "EcoCash"))))))).Replace("#cardnumber#", objPaymentInfo.CardNumber).Replace("#terminalid#", objPaymentInfo.TerminalId).Replace("#transatamout#", objPaymentInfo.TransactionAmount).Replace("#transtdate#", DateTime.Now.ToShortDateString());
+
 
                     #region Payment Email
                     var attachementFile = MiscellaneousService.EmailPdf(Body2, policy.CustomerId, policy.PolicyNumber, "Renew Invoice");

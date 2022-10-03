@@ -28,6 +28,7 @@ namespace GensureAPIv2.Models
                     model.TransactionDate = DateTime.Now;
                     model.PolicyExpireDate = model.CoverEndDate.ToString();
                 }
+              //var Regno = InsuranceContext.VehicleDetails.All().Where(v=>v.u)
 
                 var db = Mapper.Map<RiskDetailModel, VehicleDetail>(model);
                 db.IsActive = true;
@@ -68,7 +69,6 @@ namespace GensureAPIv2.Models
 
             model.TransactionDate = DateTime.Now;
             model.PolicyExpireDate = model.CoverEndDate.ToString();
-
             return model;
 
         }

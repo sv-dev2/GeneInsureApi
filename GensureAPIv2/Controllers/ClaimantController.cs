@@ -71,6 +71,7 @@ namespace GensureAPIv2.Controllers
                                 Claimmodel.PolicyNumber = Policy.PolicyNumber;
                                 Claimmodel.VRNNumber = vehicles.RegistrationNo;
                                 Claimmodel.UserId = Customer.UserID;
+                               
                                 //Claimmodel.PolicyId = Policy.Id;
                                 //Claimmodel.VehicleId = vehicles.Id;
                             }
@@ -116,7 +117,40 @@ namespace GensureAPIv2.Controllers
 
             return objmsg;
         }
+        //Approval qutes personal details
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("ALMPolicydetail")]
+        public CustomersDetailsModel GetALMPolicydetail([FromUri] string SearchText)
+        {
+            //List<GensureAPIv2.Models.ClaimNotificationModel> listVehicle = new List<GensureAPIv2.Models.ClaimNotificationModel>();
+            CustomersDetailsModel Almmodel = new CustomersDetailsModel();
+            
+            var vehicles = InsuranceContext.VehicleDetails.Single(where: $"RegistrationNo = '{SearchText}' And IsLapsed = '0' And IsActive = '1'");
+            if (vehicles != null && vehicles.Count() > 0)
+            {
+
+                var Policy = InsuranceContext.PolicyDetails.Single(where: $"Id = '" + vehicles.PolicyId + "'");
+                if (Policy != null)
+                {
+                    var Customer = InsuranceContext.Customers.Single(where: $"Id = '{vehicles.CustomerId}'");
+                    if (Customer != null)
+                    {
+
+                        Almmodel.FirstName = Customer.FirstName;
+                        Almmodel.LastName = Customer.LastName;
+                        Almmodel.EmailAddress = Customer.CompanyEmail;
+                        Almmodel.Gender = Customer.Gender;
+                        Almmodel.DateOfBirth = Customer.DateOfBirth;
+
+                        
+                    }
+                }
+            }
+        
+         return Almmodel;
+        }
 
     }
 }

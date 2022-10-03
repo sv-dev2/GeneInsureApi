@@ -116,7 +116,7 @@ namespace GensureAPIv2.Models
 
         public string IceCashRequest { get; set; }
 
-
+        public string Paymenttermname { get; set; }
         public int ZinaraPaymentTermId { get; set; }
         public int ZinaraRadioPaymentTermId { get; set; }
 
@@ -135,6 +135,8 @@ namespace GensureAPIv2.Models
         public decimal? AdministrationAmt { get; set; }
 
         public bool IsMobile { get; set; }
+
+        public string UniqueCode { get; set; }
     }
 
 

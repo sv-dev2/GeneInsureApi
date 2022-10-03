@@ -116,7 +116,7 @@ namespace GensureAPIv2.Models
         public int BranchId { get; set; }
 
         public string ALMId { get; set; }
-
+        public string Uniquecode { get; set; }
 
     }
 

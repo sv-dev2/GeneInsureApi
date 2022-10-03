@@ -110,6 +110,7 @@ namespace GensureAPIv2.Models
         public int TaxClassId { get; set; }  
 
         public int VehicleType { get; set; }
+        
     }
 
     public class PaymentTermModel
@@ -158,6 +159,19 @@ namespace GensureAPIv2.Models
 
     }
 
+    public class Riskdetailsmodel1
+    {
+        public  string Productname { get; set; }
+        public string vehicleusage { get; set; }
+        public string Discription { get; set; }
+    }
+
+    public class makemodelmodels1
+    {
+        public string Model { get; set; }
+        public string Make { get; set; }
+       
+    }
 
 
     public class VehicleUsageModel
