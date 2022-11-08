@@ -26,11 +26,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.IO;
+using System.Text;
+
 
 namespace GensureAPIv2.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]
+
     public class AccountController : ApiController
     {
         private const string LocalLoginProvider = "Local";
@@ -565,19 +568,31 @@ namespace GensureAPIv2.Controllers
 
             return Request.CreateResponse(HttpStatusCode.OK, customerUserId);
         }
-        //[Log]
+
+        
+        
+      
+       
+          //[Log]
         [AllowAnonymous]
         [HttpGet]
         [Route("PhoneNumbers")]
         public HttpResponseMessage GetAllPhoneNumbers()
         {
-            string path = System.Web.HttpContext.Current.Server.MapPath("~/Content/Countries.txt");
-            var countries = System.IO.File.ReadAllText(path);
-            var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
-            resultt.countries.OrderBy(x => x.code.Replace("+", ""));
-            return Request.CreateResponse(HttpStatusCode.OK, resultt);
-        }
-
+            try
+            {
+                string path = System.Web.HttpContext.Current.Server.MapPath("~/Content/Countries.txt");
+                var countries = System.IO.File.ReadAllText(path);
+                var resultt = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject>(countries);
+                resultt.countries.OrderBy(x => x.code.Replace("+", ""));
+                return Request.CreateResponse(HttpStatusCode.OK, resultt);
+      }
+             
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "error ocured while getting codes");  
+            }
+  }
 
         [AllowAnonymous]
         [HttpGet]
